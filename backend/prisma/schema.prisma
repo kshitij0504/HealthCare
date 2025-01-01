@@ -1,0 +1,146 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model User {
+    id               Int                @id @default(autoincrement())
+    username         String             @unique
+    email            String             @unique
+    password         String
+    avatar           String             @default("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png")
+    createdAt        DateTime           @default(now())
+    updatedAt        DateTime           @updatedAt
+    role             Role               @default(USER)
+    userVerification UserVerification[]
+    healthData       HealthData[]
+    appointments     Appointment[]
+}
+
+model UserVerification {
+    id        Int      @id @default(autoincrement())
+    userId    Int
+    otp       String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    user      User     @relation(fields: [userId], references: [id])
+
+    @@unique([userId, otp])
+}
+
+model HealthData {
+    id                     Int      @id @default(autoincrement())
+    userId                 Int
+    healthStatus          String
+    bloodType             String
+    allergies             String
+    chronicConditions     String
+    emergencyContactName  String?
+    emergencyContactNumber String?
+    insuranceProvider     String
+    policyNumber          String
+    policyStartDate       DateTime
+    policyEndDate         DateTime
+    createdAt             DateTime @default(now())
+    updatedAt             DateTime @updatedAt
+    user                  User     @relation(fields: [userId], references: [id])
+
+    @@index([userId])
+}
+
+model Organization {
+    id           Int           @id @default(autoincrement())
+    name         String
+    address      String
+    latitude     String
+    longitude    String
+    contact      String
+    services     String[]
+    accessId     String        @unique
+    status       String        @default("Pending")
+    email        String        @unique
+    password     String
+    doctors      Doctor[]
+    appointments Appointment[]
+}
+
+model Doctor {
+    id             Int           @id @default(autoincrement())
+    accessId       String        @unique
+    password       String
+    name           String
+    specialty      String
+    qualifications String
+    contact        String
+    organizationId Int
+    organization   Organization  @relation(fields: [organizationId], references: [id])
+    appointments   Appointment[]
+    schedules      Schedule[]
+}
+
+model Schedule {
+    id           Int           @id @default(autoincrement())
+    doctorId     Int
+    dayOfWeek    Int          @default(0)
+    startTime    String       @default("09:00")
+    endTime      String       @default("17:00")
+    slotDuration Int          @default(30)
+    isActive     Boolean      @default(true)
+    doctor       Doctor       @relation(fields: [doctorId], references: [id])
+    appointments Appointment[]
+    createdAt    DateTime     @default(now())
+    updatedAt    DateTime     @updatedAt
+
+    @@index([doctorId, dayOfWeek])
+    @@unique([doctorId, dayOfWeek])
+}
+
+model Appointment {
+  id             String          @id @default(uuid())
+  schedule       Schedule        @relation(fields: [scheduleId], references: [id])
+  scheduleId     Int
+  date           DateTime
+  startTime      DateTime
+  endTime        DateTime
+  patientName    String
+  patientEmail   String
+  userId         Int             // Add this field
+  user           User            @relation(fields: [userId], references: [id])
+  doctorId       Int
+  doctor         Doctor          @relation(fields: [doctorId], references: [id])
+  organizationId Int
+  organization   Organization    @relation(fields: [organizationId], references: [id])
+  status         AppointmentStatus @default(BOOKED)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  @@index([scheduleId, date])
+  @@index([startTime, endTime])
+}
+
+
+
+enum Role {
+    ADMIN
+    HEALTHORG
+    DOCTOR
+    USER
+}
+
+// enum AppointmentStatus {
+//     PENDING
+//     CONFIRMED
+//     CANCELLED
+//     COMPLETED
+// }
+
+enum AppointmentStatus {
+  BOOKED
+  CANCELLED
+  COMPLETED
+  NO_SHOW
+}

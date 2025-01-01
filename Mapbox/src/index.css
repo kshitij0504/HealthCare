@@ -1,0 +1,22 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --radius: 0.5rem
+  }
+}
+
+
+.mapboxgl-popup-content {
+  font-family: 'Poppins', sans-serif;
+  padding: 1rem;
+  border-radius: 0.5rem;
+}
+
+.mapboxgl-popup-close-button {
+  font-size: 1.25rem;
+  padding: 0.25rem;
+}
