@@ -3,11 +3,8 @@ import {
   ChevronRight,
   ChevronLeft,
   Menu,
-  Home,
   Calendar,
   Users,
-  Activity,
-  LogOut,
   Star,
   X,
   Mail,
@@ -16,7 +13,8 @@ import {
   Clock,
   Plus,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import Sidebar from "../HospitalSidebar";
+import AddDoctor from "./AddDoctor";
 
 const DoctorDashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -25,7 +23,6 @@ const DoctorDashboard = () => {
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showAddDoctor, setShowAddDoctor] = useState(false);
-  const [activeTab, setActiveTab] = useState("personal");
 
   const doctors = [
     {
@@ -50,19 +47,6 @@ const DoctorDashboard = () => {
         "Dr. Clive Nathan is a highly skilled gynecologist with extensive experience in handling complex cases. He specializes in minimally invasive surgical techniques and has successfully treated numerous patients with various gynecological conditions.",
     },
   ];
-
-  const menuItems = [
-    { icon: Home, label: "Dashboard", path: "/hospitaldash" },
-    {
-      icon: Calendar,
-      label: "Appointments",
-      path: "/hospital-patient-appoinment",
-    },
-    { icon: Activity, label: "Doctors", path: "/hospital-doctorlist" },
-    { icon: Users, label: "Patients", path: "/hospital-patientlist" },
-    { icon: LogOut, label: "LogOut", path: "/signin" },
-  ];
-
   const tabs = [
     { id: "personal", label: "Personal Details", icon: Users },
     { id: "profile", label: "Profile and Bio", icon: Award },
@@ -115,19 +99,19 @@ const DoctorDashboard = () => {
                 <p className="text-gray-600 mb-2">{doctor.department}</p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                   <div className="flex items-center gap-2">
-                    <Mail className="w-5 h-5 text-blue-600" />
+                    <Mail className="w-5 h-5 text-teal-600" />
                     <span>{doctor.email}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Phone className="w-5 h-5 text-blue-600" />
+                    <Phone className="w-5 h-5 text-teal-600" />
                     <span>{doctor.phone}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Award className="w-5 h-5 text-blue-600" />
+                    <Award className="w-5 h-5 text-teal-600" />
                     <span>{doctor.education}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Clock className="w-5 h-5 text-blue-600" />
+                    <Clock className="w-5 h-5 text-teal-600" />
                     <span>{doctor.availability}</span>
                   </div>
                 </div>
@@ -145,7 +129,7 @@ const DoctorDashboard = () => {
                   {doctor.specializations.map((spec, index) => (
                     <span
                       key={index}
-                      className="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-sm"
+                      className="px-3 py-1 bg-blue-50 text-teal-600 rounded-full text-sm"
                     >
                       {spec}
                     </span>
@@ -170,227 +154,7 @@ const DoctorDashboard = () => {
     );
   };
 
-  const AddDoctorForm = () => {
-    return (
-      <div className="bg-white rounded-lg shadow-sm">
-        <div className="border-b">
-          <div className="flex">
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                className={`flex items-center gap-2 px-6 py-3 border-b-2 transition-colors ${
-                  activeTab === tab.id
-                    ? "border-blue-500 text-blue-500"
-                    : "border-transparent hover:border-gray-300"
-                }`}
-                onClick={() => setActiveTab(tab.id)}
-              >
-                <tab.icon className="w-4 h-4" />
-                {tab.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="p-6">
-          {activeTab === "personal" && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  First Name <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-                  placeholder="Enter First Name"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Last Name <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-                  placeholder="Enter Last Name"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Age <span className="text-red-500">*</span>
-                </label>
-                <select className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
-                  <option value="">Select Age</option>
-                  {[...Array(50)].map((_, i) => (
-                    <option key={i + 23} value={i + 23}>
-                      {i + 23}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Gender <span className="text-red-500">*</span>
-                </label>
-                <div className="flex gap-4 mt-2">
-                  <label className="flex items-center gap-2">
-                    <input type="radio" name="gender" value="male" />
-                    Male
-                  </label>
-                  <label className="flex items-center gap-2">
-                    <input type="radio" name="gender" value="female" />
-                    Female
-                  </label>
-                </div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Mobile Number <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="tel"
-                  className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-                  placeholder="Enter Mobile Number"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Email ID <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="email"
-                  className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-                  placeholder="Enter Email ID"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Qualification
-                </label>
-                <select className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
-                  <option value="">Select</option>
-                  <option value="mbbs">MBBS</option>
-                  <option value="md">MD</option>
-                  <option value="ms">MS</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Designation
-                </label>
-                <select className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
-                  <option value="">Select</option>
-                  <option value="senior">Senior Consultant</option>
-                  <option value="junior">Junior Consultant</option>
-                  <option value="resident">Resident Doctor</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Blood Group <span className="text-red-500">*</span>
-                </label>
-                <select className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
-                  <option value="">Select</option>
-                  <option value="A+">A+</option>
-                  <option value="A-">A-</option>
-                  <option value="B+">B+</option>
-                  <option value="B-">B-</option>
-                  <option value="AB+">AB+</option>
-                  <option value="AB-">AB-</option>
-                  <option value="O+">O+</option>
-                  <option value="O-">O-</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Address
-                </label>
-                <input
-                  type="text"
-                  className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-                  placeholder="Enter Address"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">City</label>
-                <input
-                  type="text"
-                  className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-                  placeholder="Enter City"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Postal Code
-                </label>
-                <input
-                  type="text"
-                  className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-                  placeholder="Enter Postal Code"
-                />
-              </div>
-            </div>
-          )}
-
-          {activeTab === "profile" && (
-            <div className="space-y-6">
-              <div className="border-2 border-dashed rounded-lg p-8 text-center">
-                <div className="mb-4">Click here to upload your photo.</div>
-                <button className="px-4 py-2 bg-blue-50 text-blue-600 rounded-lg">
-                  Upload Photo
-                </button>
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Write Bio
-                </label>
-                <textarea
-                  className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 min-h-[200px]"
-                  placeholder="Write your bio here..."
-                />
-              </div>
-            </div>
-          )}
-
-          {activeTab === "availability" && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
-                <div key={day}>
-                  <label className="block text-sm font-medium mb-2">
-                    {day}
-                  </label>
-                  <div className="flex gap-2">
-                    <select className="flex-1 p-2 border rounded-lg">
-                      <option>From</option>
-                      {[...Array(24)].map((_, i) => (
-                        <option key={i} value={`${i}:00`}>
-                          {`${i}:00`}
-                        </option>
-                      ))}
-                    </select>
-                    <select className="flex-1 p-2 border rounded-lg">
-                      <option>To</option>
-                      {[...Array(24)].map((_, i) => (
-                        <option key={i} value={`${i}:00`}>
-                          {`${i}:00`}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-          <div className="mt-6 pt-6 border-t flex justify-end">
-            <button className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-              Create Doctor Profile
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
+  
   return (
     <div className="min-h-screen bg-gray-50">
       {isMobile && isSidebarOpen && (
@@ -415,7 +179,6 @@ const DoctorDashboard = () => {
           >
             {isSidebarOpen ? (
               <>
-                <span className="text-xl font-bold text-blue-600">MedFlex</span>
                 {!isMobile && (
                   <button
                     onClick={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -435,20 +198,7 @@ const DoctorDashboard = () => {
             )}
           </div>
           <nav className="flex-1 px-3 py-4 space-y-1">
-            {menuItems.map((item, index) => (
-              <Link key={index} to={item.path}>
-                <button
-                  className={`flex items-center w-full rounded-lg text-left transition-colors hover:bg-gray-100 ${
-                    isSidebarOpen ? "px-4 py-3" : "p-3 justify-center"
-                  }`}
-                >
-                  <item.icon
-                    className={`w-5 h-5 ${isSidebarOpen ? "mr-3" : ""}`}
-                  />
-                  {isSidebarOpen && <span>{item.label}</span>}
-                </button>
-              </Link>
-            ))}
+            <Sidebar/>
           </nav>
         </div>
       </aside>
@@ -473,7 +223,7 @@ const DoctorDashboard = () => {
             </h1>
             <button
               onClick={() => setShowAddDoctor(!showAddDoctor)}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              className="flex items-center gap-2 px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700"
             >
               <Plus className="w-4 h-4" />
               Add Doctor
@@ -483,14 +233,14 @@ const DoctorDashboard = () => {
 
         {showAddDoctor ? (
           <div className="p-6">
-            <AddDoctorForm />
+            <AddDoctor />
           </div>
         ) : (
           <>
             <div className="p-6">
               <div className="max-w-xs">
                 <select
-                  className="w-full p-2 border rounded-lg bg-white shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full p-2 border rounded-lg bg-white shadow-sm focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
                   value={selectedDepartment}
                   onChange={(e) => setSelectedDepartment(e.target.value)}
                 >
@@ -529,10 +279,10 @@ const DoctorDashboard = () => {
                         <h3 className="text-lg font-semibold text-center mb-1">
                           {doctor.name}
                         </h3>
-                        <p className="text-blue-600 text-sm mb-2">
+                        <p className="text-teal-600 text-sm mb-2">
                           {doctor.department}
                         </p>
-                        <p className="text-gray-600 text-sm mb-3">
+                        <p className="text-teal-600 text-sm mb-3">
                           {doctor.experience}
                         </p>
                       </div>

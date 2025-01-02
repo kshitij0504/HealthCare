@@ -33,8 +33,8 @@ const ContactUs = () => {
       <div className="max-w-7xl mx-auto px-4">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div>
-            <span className="text-teal-600 font-semibold">Contact Us</span>
-            <h2 className="mt-2 text-4xl font-bold text-gray-900">
+            <span className="text-teal-600 text-5xl font-semibold">Contact Us</span>
+            <h2 className="mt-2 text-3xl font-bold text-gray-900">
               We’d love to hear from you
             </h2>
             <p className="mt-4 text-gray-600">
@@ -100,9 +100,10 @@ const ContactUs = () => {
           </div>
           <div>
             <img
-              src="../../../assets/contact.jpg"
+              src="../../../assets/contactus.jpg"
               alt="Contact Us"
-              className="rounded-lg shadow-lg"
+              className="w-full h-auto rounded-lg shadow-lg object-cover"
+              style={{ maxHeight: '500px' }}
             />
           </div>
         </div>

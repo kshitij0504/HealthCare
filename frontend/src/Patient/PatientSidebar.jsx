@@ -1,46 +1,54 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
-import SidebarLink from "./PatientSidebarLink"
+import { Link } from "react-router-dom";
 import { BarChart, Calendar, Bed, MapPin, User, LogOut } from "lucide-react";
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
-  const navigate = useNavigate();
+  const menuItems = [
+    { icon: BarChart, label: "Dashboard", path: "/patientdash" },
+    { icon: Calendar, label: "Appointments", path: "/patient-appointments" },
+    { icon: Bed, label: "Hospitals", path: "/hospital-card" },
+    { icon: MapPin, label: "Find Hospitals", path: "/find-hospitals" },
+    { icon: User, label: "Profile", path: "/patientprofile" },
+    { icon: LogOut, label: "Sign Out", path: "/signin" },
+  ];
 
   return (
-    <div
-      className={`fixed top-0 left-0 bottom-0 w-64 bg-white border-r transform transition-transform duration-200 ease-in-out z-30 ${
+    <aside
+      className={`fixed top-0 left-0 z-40 h-screen w-64 bg-white shadow-lg transform transition-transform duration-200 ease-in-out z-30 ${
         sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
       }`}
     >
-      <div className="flex items-center space-x-3 px-6 py-4 border-b">
-        <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
-          <span className="text-white font-bold">P</span>
-        </div>
-        <span className="text-xl font-semibold">Patient</span>
+      <div className="h-24 border-b flex items-center justify-center">
+        <img
+          src="../../../assets/CureNest_logo.svg"
+          alt="Logo"
+          className="h-16 w-48 object-contain"
+        />
       </div>
 
-      <nav className="p-4 space-y-1">
-        <SidebarLink
-          icon={BarChart}
-          label="Dashboard"
-          path="/patientdash"
-          active
-        />
-        <SidebarLink
-          icon={Calendar}
-          label="Appointments"
-          path="/patient-appointments"
-        />
-        <SidebarLink icon={Bed} label="Hospitals" path="/hospital-card" />
-        <SidebarLink
-          icon={MapPin}
-          label="Find Hospitals"
-          path="/find-hospitals"
-        />
-        <SidebarLink icon={User} label="Profile" path="/patientprofile" />
-        <SidebarLink icon={LogOut} label="Sign Out" path="/signin" />
+      <nav className="flex-1 px-4 py-6 space-y-2">
+        {menuItems.map((item, index) => (
+          <Link key={index} to={item.path}>
+            <button
+              className="flex items-center w-full px-4 py-3 rounded-lg text-left 
+              transition-all duration-200 hover:bg-teal-50 active:bg-teal-100 
+              group relative overflow-hidden"
+            >
+              <div
+                className="absolute left-0 top-0 h-full w-1 bg-teal-600 transform 
+                -translate-x-full group-hover:translate-x-0 transition-transform duration-200"
+              />
+              <item.icon className="w-5 h-5 text-gray-500 group-hover:text-teal-600 
+              transition-colors duration-200 mr-3" />
+              <span className="text-gray-700 group-hover:text-teal-600 
+              transition-colors duration-200 font-medium">
+                {item.label}
+              </span>
+            </button>
+          </Link>
+        ))}
       </nav>
-    </div>
+    </aside>
   );
 };
 

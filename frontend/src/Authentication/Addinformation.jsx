@@ -94,11 +94,16 @@ const WelcomeHealthForm = () => {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-teal-50 p-4 font-inter">
       <Card className="w-full max-w-2xl shadow-xl">
         <CardHeader>
-          <CardTitle className="text-3xl text-center font-bold">
+        <img
+            src="../../assets/CureNest_logo.svg"
+            alt="CureNest Logo"
+            className="mx-auto h-15 w-25"
+          />
+          {/* <CardTitle className="text-3xl text-center font-bold">
             Welcome to CureNest
-          </CardTitle>
+          </CardTitle> */}
           <p className="text-center text-gray-600 mt-2">
-            Please provide your health information to get started
+           Welcome to CureNest
           </p>
         </CardHeader>
         <CardContent>

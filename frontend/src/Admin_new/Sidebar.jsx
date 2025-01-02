@@ -14,11 +14,11 @@ import {
 
 const Sidebar = ({ activeNav, setActiveNav }) => {
   const navItems = [
-    { icon: Settings, name: 'Dashboard', path: '/admin-dash' },
-    { icon: Building2, name: 'Hospitals', path: '/admin-hospital' },
+    { icon: Settings, name: 'Dashboard', path: '/admin/dashboard' },
+    { icon: Building2, name: 'Hospitals', path: '/admin-hosp' },
     { icon: Activity, name: 'Analytics', path: '/admin-analytics' },
-    { icon: Users, name: 'Doctors', path: '/admin-doctor' },
-    { icon: Calendar, name: 'Patients', path: '/admin-Patient' },
+    { icon: Users, name: 'Doctors', path: '/admin-doctors' },
+    { icon: Calendar, name: 'Patients', path: '/admin-patient-appointments' },
   ];
 
   return (

@@ -55,6 +55,7 @@ const MedicalDashboard = () => {
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
+  
   // Stats data for the dashboard cards
   const stats = [
     { title: "Appointments", value: "213", icon: Calendar, trend: "+2.5%" },

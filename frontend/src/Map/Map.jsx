@@ -69,7 +69,7 @@ const HospitalLocator = () => {
 
   const fetchNearbyHospitals = async (lat, lon) => {
     try {
-      const radius = 5000;
+      const radius = 30000;
       const query = `
         [out:json];
         (

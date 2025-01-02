@@ -78,7 +78,7 @@ const OAuth = () => {
     <Button
       color="failure"
       pill
-      className="mt-6 w-full flex items-center justify-center gap-2"
+      className="mt-6 w-full flex items-center justify-center gap-2 bg-white text-black hover:bg-white-100"
       type="button"
       onClick={handleGoogleClick}
       disabled={isLoading}

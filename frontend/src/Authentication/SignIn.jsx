@@ -62,7 +62,12 @@ const SignIn = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-teal-50 p-4">
       <Card className="w-full max-w-md">
-        <CardHeader className="text-center space-y-1">
+        <CardHeader className="text-center space-y-4">
+        <img
+            src="../../assets/CureNest_logo.svg"
+            alt="CureNest Logo"
+            className="mx-auto h-15 w-25"
+          />
           <CardTitle className="text-3xl font-bold">Welcome to CureNest</CardTitle>
           <CardDescription>Your Digital Healthcare Platform</CardDescription>
         </CardHeader>
@@ -104,7 +109,7 @@ const SignIn = () => {
 
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
-                <Checkbox id="remember" />
+                <Checkbox id="remember"/>
                 <Label htmlFor="remember" className="text-sm">Remember me</Label>
               </div>
               <Button variant="link" className="px-0" asChild>
@@ -114,7 +119,7 @@ const SignIn = () => {
 
             <Button 
               type="submit" 
-              className="w-full"
+              className="w-full bg-teal-600 hover:bg-teal-700"
               disabled={loading}
             >
               {loading ? "Signing in..." : "Sign in"}
@@ -158,7 +163,7 @@ const SignIn = () => {
 
           <p className="text-center text-sm text-gray-600">
             Don't have an account?{" "}
-            <Button variant="link" className="px-0" asChild>
+            <Button variant="link" className="px-0 text-teal-600" asChild>
               <a href="/signup">Sign up</a>
             </Button>
           </p>

@@ -75,19 +75,20 @@ const SuperAdminLogin = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-teal-50 to-teal-100 p-4">
       <div className="w-full max-w-md">
-        {/* Logo/Icon Section */}
-        <div className="flex justify-center mb-6">
-          <div className="bg-teal-600 p-4 rounded-full shadow-lg">
-            <ShieldCheck className="h-12 w-12 text-white" />
-          </div>
-        </div>
-
+        
         <Card className="border-none shadow-2xl backdrop-blur-sm bg-white/90">
-          <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl font-bold text-center text-teal-800">
+          <CardHeader className="space-y-1 flex justify-center">
+            <div className="flex justify-center">
+          <img
+          src="../../../assets/CureNest_logo.svg"
+          alt="Logo"
+          className="h-16 w-48 object-contain"
+        />
+        </div>
+            <CardTitle className="text-2xl font-bold text-center text-black">
               Super Admin Portal
             </CardTitle>
-            <CardDescription className="text-center text-teal-600">
+            <CardDescription className="text-center text-black">
               Welcome back to Curenest Management
             </CardDescription>
           </CardHeader>
@@ -101,7 +102,7 @@ const SuperAdminLogin = () => {
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Email Field */}
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-teal-700 font-medium">
+                <Label htmlFor="email" className="text-black font-medium">
                   Email Address
                 </Label>
                 <div className="relative group">
@@ -122,7 +123,7 @@ const SuperAdminLogin = () => {
 
               {/* Password Field */}
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-teal-700 font-medium">
+                <Label htmlFor="password" className="text-black font-medium">
                   Password
                 </Label>
                 <div className="relative group">
@@ -149,7 +150,7 @@ const SuperAdminLogin = () => {
                     id="remember"
                     className="rounded border-teal-300 text-teal-600 focus:ring-teal-500"
                   />
-                  <label htmlFor="remember" className="text-teal-600">
+                  <label htmlFor="remember" className="text-black">
                     Remember me
                   </label>
                 </div>
@@ -180,7 +181,7 @@ const SuperAdminLogin = () => {
               </Button>
 
               {/* Security Note */}
-              <div className="text-center text-sm text-teal-600 mt-4">
+              <div className="text-center text-sm text-black mt-4">
                 <div className="flex items-center justify-center space-x-1">
                   <Lock className="h-4 w-4" />
                   <span>Secure authentication powered by Curenest</span>

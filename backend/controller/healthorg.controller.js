@@ -48,7 +48,7 @@ const healthOrgSignin = async (req, res) => {
 
 
 const addDoctor = async (req, res) => {
-  const { name, specialty, qualifications, availability, contact } = req.body;
+  const { firstname, specialty, qualifications, email, contact } = req.body;
 
   const token = req.cookies.healthOrgToken
   if (!token) {
@@ -71,10 +71,19 @@ const addDoctor = async (req, res) => {
     const doctor = await prisma.doctor.create({
       data: {
         accessId,
-        name,
+        firstname,
+        lastname,
+        email,
         specialty,
         qualifications,
         contact,
+        age,
+        gender,
+        BloodGroup,
+        address,
+        postalcode,
+        bio,
+        photo,
         organizationId: organizationIdInt,
         password: hashedPassword,
       },

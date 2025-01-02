@@ -30,7 +30,10 @@ const LoginPage = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(requestBody),
+        credentials: 'include'
       });
+
+      console.log(response)
 
       if (!response.ok) {
         const data = await response.json();
@@ -41,9 +44,9 @@ const LoginPage = () => {
       console.log(data);
 
        if (userType === 'org') {
-        navigate('/healthorg/dashboard'); // Navigate to health organization dashboard
+        navigate('/hospitaldash'); // Navigate to health organization dashboard
       } else {
-        navigate('/doctor/dashboard'); // Navigate to doctor dashboard
+        navigate('/doctordash'); // Navigate to doctor dashboard
       }
     } catch (err) {
       setError(err.message);
@@ -55,16 +58,16 @@ const LoginPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-white flex items-center justify-center p-4">
       <div className="max-w-md w-full space-y-8">
-        {/* Logo and Title */}
-        <div className="text-center">
-          <h1 className="text-4xl font-bold text-teal-700 mb-2">Curnest</h1>
-          <p className="text-teal-600">Healthcare Management Platform</p>
-        </div>
-
+        
         <Card className="w-full bg-white shadow-xl border-teal-100">
           <CardHeader>
-            <CardTitle className="text-2xl text-teal-800 text-center">Welcome Back</CardTitle>
-            <CardDescription className="text-center text-teal-600">
+          <img
+          src="../../../assets/CureNest_logo.svg"
+          alt="Logo"
+          className=" ml-10 h-50 w-80 object-contain"
+        />
+            <CardTitle className="text-2xl text-black text-center">Welcome Back</CardTitle>
+            <CardDescription className="text-center text-black">
               Sign in to access your dashboard
             </CardDescription>
           </CardHeader>
@@ -99,7 +102,7 @@ const LoginPage = () => {
             {/* Login Form */}
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-1">
-                <label className="text-sm font-medium text-teal-700">
+                <label className="text-sm font-medium text-black">
                   {userType === 'doctor' ? 'Access ID' : 'Organization ID'}
                 </label>
                 <div className="relative">
@@ -116,7 +119,7 @@ const LoginPage = () => {
               </div>
 
               <div className="space-y-1">
-                <label className="text-sm font-medium text-teal-700">Password</label>
+                <label className="text-sm font-medium text-black">Password</label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-teal-500" size={20} />
                   <input
