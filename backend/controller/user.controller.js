@@ -70,7 +70,6 @@ const login = async (req, res) => {
     res.cookie("token", token, {
       httpOnly: true,
       sameSite: "strict",
-      secure: process.env.NODE_ENV === "production", // Enable in production
       maxAge: 3600000, // 1 hour
     });
 
