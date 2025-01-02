@@ -238,8 +238,8 @@
 
 // export default AddDoctor
 import React, { useState } from 'react';
-import { Calendar, Users, Award } from 'lucide-react';
-import Cookies from 'js-cookie';
+import { Users, Award } from 'lucide-react';
+
 const AddDoctor = () => {
   const [activeTab, setActiveTab] = useState('personal');
   const [formData, setFormData] = useState({
@@ -247,15 +247,14 @@ const AddDoctor = () => {
     lastName: '',
     age: '',
     gender: '',
-    contact: '', // Updated from mobileNumber
+    contact: '',
     email: '',
     qualifications: '',
-    speciality: '',
+    specialty: '',
     bloodGroup: '',
     address: '',
     postalCode: '',
     bio: '',
-    availability: {},
   });
   const [photo, setPhoto] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
@@ -264,7 +263,6 @@ const AddDoctor = () => {
   const tabs = [
     { id: 'personal', label: 'Personal Details', icon: Users },
     { id: 'profile', label: 'Profile and Bio', icon: Award },
-    { id: 'availability', label: 'Availability', icon: Calendar },
   ];
 
   const handleInputChange = (e) => {
@@ -272,70 +270,47 @@ const AddDoctor = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleAvailabilityChange = (day, key, value) => {
-    setFormData((prev) => ({
-      ...prev,
-      availability: {
-        ...prev.availability,
-        [day]: {
-          ...prev.availability[day],
-          [key]: value,
-        },
-      },
-    }));
-  };
-
   const handlePhotoUpload = (e) => {
-    setPhoto(e.target.files[0]);
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPhoto(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
- 
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    
+    const payload = {
+      ...formData,
+      photo: photo
+    };
 
-const handleSubmit = async (event) => {
-  event.preventDefault();
+    try {
+      const response = await fetch('http://localhost:5000/healthorg/add-doctor', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify(payload),
+      });
 
-  const payload = new FormData();
+      if (!response.ok) {
+        throw new Error(`Server returned an error: ${response.status}`);
+      }
 
-  // Append formData fields to the payload
-  Object.keys(formData).forEach((key) => {
-    if (key === 'availability') {
-      payload.append(key, JSON.stringify(formData[key])); // Convert availability object to JSON
-    } else {
-      payload.append(key, formData[key]);
+      const data = await response.json();
+      setSuccessMessage('Doctor profile created successfully!');
+      setErrorMessage('');
+    } catch (error) {
+      setErrorMessage(error.message || 'An unknown error occurred.');
+      setSuccessMessage('');
     }
-  });
-
-  // Append photo if it exists
-  if (photo) {
-    payload.append('photo', photo);
-  }
-
-  try {
-    const response = await fetch('http://localhost:5000/healthorg/add-doctor', {
-      method: 'POST',
-      // headers: {
-      //   Authorization: `Bearer ${token}`,
-      // },
-      body: payload,
-      credentials: 'include'
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Server Error:', errorText);
-      throw new Error(`Server returned an error: ${response.status}`);
-    }
-
-    const data = await response.json();
-    console.log('Success:', data);
-    setSuccessMessage('Doctor profile created successfully!');
-    setErrorMessage('');
-  } catch (error) {
-    console.error('Error during form submission:', error);
-    setErrorMessage(error.message || 'An unknown error occurred.');
-    setSuccessMessage('');
-  }
-};
+  };
 
   return (
     <div className="bg-white rounded-lg shadow-sm">
@@ -513,8 +488,29 @@ const handleSubmit = async (event) => {
         {activeTab === 'profile' && (
           <div className="space-y-6">
             <div className="border-2 border-dashed rounded-lg p-8 text-center">
-              <div className="mb-4">Click here to upload your photo.</div>
-              <input type="file" accept="image/*" onChange={handlePhotoUpload} />
+              <div className="mb-4">Click here to upload your photo</div>
+              <input 
+                type="file" 
+                accept="image/*" 
+                onChange={handlePhotoUpload} 
+                className="hidden" 
+                id="photo-upload"
+              />
+              <label 
+                htmlFor="photo-upload"
+                className="px-4 py-2 bg-blue-50 text-teal-600 rounded-lg cursor-pointer"
+              >
+                Upload Photo
+              </label>
+              {photo && (
+                <div className="mt-4">
+                  <img 
+                    src={photo} 
+                    alt="Preview" 
+                    className="max-w-xs mx-auto rounded-lg"
+                  />
+                </div>
+              )}
             </div>
             <div>
               <label className="block text-sm font-medium mb-1">Write Bio</label>
@@ -526,44 +522,6 @@ const handleSubmit = async (event) => {
                 placeholder="Write your bio here..."
               />
             </div>
-          </div>
-        )}
-
-        {activeTab === 'availability' && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
-              <div key={day}>
-                <label className="block text-sm font-medium mb-2">{day}</label>
-                <div className="flex gap-2">
-                  <select
-                    onChange={(e) =>
-                      handleAvailabilityChange(day, 'from', e.target.value)
-                    }
-                    className="flex-1 p-2 border rounded-lg"
-                  >
-                    <option value="">From</option>
-                    {[...Array(24)].map((_, i) => (
-                      <option key={i} value={`${i}:00`}>
-                        {`${i}:00`}
-                      </option>
-                    ))}
-                  </select>
-                  <select
-                    onChange={(e) =>
-                      handleAvailabilityChange(day, 'to', e.target.value)
-                    }
-                    className="flex-1 p-2 border rounded-lg"
-                  >
-                    <option value="">To</option>
-                    {[...Array(24)].map((_, i) => (
-                      <option key={i} value={`${i}:00`}>
-                        {`${i}:00`}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-            ))}
           </div>
         )}
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ChevronRight,
   ChevronLeft,
@@ -23,39 +23,43 @@ const DoctorDashboard = () => {
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showAddDoctor, setShowAddDoctor] = useState(false);
+  const [doctors, setDoctors] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const doctors = [
-    {
-      id: 1,
-      name: "Dr. Clive Nathan",
-      department: "Gynecology",
-      experience: "8 Years Experience",
-      rating: 5,
-      image: "/api/placeholder/200/200",
-      email: "clive.nathan@medflex.com",
-      phone: "+1 (555) 123-4567",
-      education: "MBBS, MD - Gynecology",
-      specializations: [
-        "High-Risk Pregnancy",
-        "Laparoscopic Surgery",
-        "Infertility Treatment",
-      ],
-      availability: "Mon-Fri, 9:00 AM - 5:00 PM",
-      consultationFee: "$150",
-      languages: ["English", "Spanish"],
-      about:
-        "Dr. Clive Nathan is a highly skilled gynecologist with extensive experience in handling complex cases. He specializes in minimally invasive surgical techniques and has successfully treated numerous patients with various gynecological conditions.",
-    },
-  ];
-  const tabs = [
-    { id: "personal", label: "Personal Details", icon: Users },
-    { id: "profile", label: "Profile and Bio", icon: Award },
-    { id: "availability", label: "Availability", icon: Calendar },
-  ];
+  useEffect(() => {
+    fetchDoctors();
+  }, []);
 
-  const filteredDoctors = selectedDepartment
-    ? doctors.filter((doctor) => doctor.department === selectedDepartment)
-    : doctors;
+  const fetchDoctors = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(`http://localhost:5000/healthorg/getDoctor`, {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch doctors');
+      }
+
+      const data = await response.json();
+      console.log(data);
+      setDoctors(data.doctors);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filteredDoctors = Array.isArray(doctors) 
+  ? selectedDepartment
+    ? doctors.filter((doctor) => doctor.specialty === selectedDepartment)
+    : doctors
+  : [];
 
   const RatingStars = ({ rating }) => (
     <div className="flex gap-1">
@@ -72,7 +76,7 @@ const DoctorDashboard = () => {
 
   const DoctorModal = ({ doctor, onClose }) => {
     if (!doctor) return null;
-
+  
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
         <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
@@ -85,18 +89,18 @@ const DoctorDashboard = () => {
               <X className="w-5 h-5" />
             </button>
           </div>
-
+  
           <div className="p-6">
             <div className="flex flex-col md:flex-row gap-6">
               <img
-                src={doctor.image}
-                alt={doctor.name}
+                src={doctor.photo}
+                alt={`${doctor.firstname} ${doctor.lastname}`}
                 className="w-32 h-32 rounded-lg object-cover"
               />
-
+  
               <div className="flex-1">
-                <h3 className="text-2xl font-semibold mb-2">{doctor.name}</h3>
-                <p className="text-gray-600 mb-2">{doctor.department}</p>
+                <h3 className="text-2xl font-semibold mb-2">{`${doctor.firstname} ${doctor.lastname}`}</h3>
+                <p className="text-gray-600 mb-2">{doctor.specialty}</p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                   <div className="flex items-center gap-2">
                     <Mail className="w-5 h-5 text-teal-600" />
@@ -104,15 +108,11 @@ const DoctorDashboard = () => {
                   </div>
                   <div className="flex items-center gap-2">
                     <Phone className="w-5 h-5 text-teal-600" />
-                    <span>{doctor.phone}</span>
+                    <span>{doctor.contact}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Award className="w-5 h-5 text-teal-600" />
-                    <span>{doctor.education}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Clock className="w-5 h-5 text-teal-600" />
-                    <span>{doctor.availability}</span>
+                    <span>{doctor.qualifications}</span>
                   </div>
                 </div>
               </div>
@@ -120,32 +120,32 @@ const DoctorDashboard = () => {
             <div className="mt-6 space-y-4">
               <div>
                 <h4 className="font-semibold mb-2">About</h4>
-                <p className="text-gray-600">{doctor.about}</p>
+                <p className="text-gray-600">{doctor.bio}</p>
               </div>
-
+  
               <div>
-                <h4 className="font-semibold mb-2">Specializations</h4>
-                <div className="flex flex-wrap gap-2">
-                  {doctor.specializations.map((spec, index) => (
-                    <span
-                      key={index}
-                      className="px-3 py-1 bg-blue-50 text-teal-600 rounded-full text-sm"
-                    >
-                      {spec}
-                    </span>
-                  ))}
+                <h4 className="font-semibold mb-2">Additional Information</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <span className="font-medium">Age:</span> {doctor.age}
+                  </div>
+                  <div>
+                    <span className="font-medium">Blood Group:</span> {doctor.BloodGroup}
+                  </div>
+                  <div>
+                    <span className="font-medium">Gender:</span> {doctor.gender}
+                  </div>
+                  <div>
+                    <span className="font-medium">Access ID:</span> {doctor.accessId}
+                  </div>
                 </div>
               </div>
-            </div>
-
-            <div className="mt-6 pt-6 border-t">
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <span className="text-gray-600">Consultation Fee</span>
-                  <p className="text-xl font-semibold">
-                    {doctor.consultationFee}
-                  </p>
-                </div>
+  
+              <div>
+                <h4 className="font-semibold mb-2">Address</h4>
+                <p className="text-gray-600">
+                  {doctor.address}, {doctor.postalcode}
+                </p>
               </div>
             </div>
           </div>
@@ -272,18 +272,18 @@ const DoctorDashboard = () => {
                     <div className="p-6">
                       <div className="flex flex-col items-center">
                         <img
-                          src={doctor.image}
+                          src={doctor.photo}
                           alt={doctor.name}
                           className="w-24 h-24 rounded-full object-cover mb-4"
                         />
                         <h3 className="text-lg font-semibold text-center mb-1">
-                          {doctor.name}
+                          {doctor.firstname} {doctor.lastname}
                         </h3>
                         <p className="text-teal-600 text-sm mb-2">
-                          {doctor.department}
+                          {doctor.specialty}
                         </p>
                         <p className="text-teal-600 text-sm mb-3">
-                          {doctor.experience}
+                          {doctor.contact}
                         </p>
                       </div>
                     </div>

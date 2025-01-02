@@ -20,8 +20,7 @@ const LoginPage = () => {
       const endpoint = userType === 'org' 
         ? 'http://localhost:5000/healthorg/signin'
         : 'http://localhost:5000/auth/doctor-signin';
-
-      // Prepare the request body based on user type
+        
       const requestBody = userType === 'org'
         ? { id: formData.id, password: formData.password }
         : { accessId: formData.id, password: formData.password };

@@ -46,73 +46,84 @@ const healthOrgSignin = async (req, res) => {
   }
 };
 
-
 const addDoctor = async (req, res) => {
-  const { firstname, specialty, qualifications, email, contact } = req.body;
+  const {
+    firstName,
+    lastName,
+    email,
+    specialty,
+    qualifications,
+    contact,
+    age,
+    gender,
+    bloodGroup,
+    address,
+    postalCode,
+    bio,
+    photo
+  } = req.body;
 
-  const token = req.cookies.healthOrgToken
+  const token = req.cookies.healthOrgToken;
   if (!token) {
     return res.status(401).json({ error: "No token provided" });
   }
 
-  const decoded = jwt.verify(token, "your-secret-key");
-  console.log(decoded)
-  const organizationId= decoded.id;
-  console.log(organizationId)
-  const organizationIdInt = parseInt(organizationId,10)
-
   try {
+    const decoded = jwt.verify(token, "your-secret-key");
+    const organizationId = parseInt(decoded.id, 10);
+
+    // Generate unique identifiers
     const doctorId = uuidv4();
     const password = Math.random().toString(36).substring(2, 10);
-
     const accessId = `CN_DR_${uuidv4().split("-")[0].toUpperCase()}`;
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const doctor = await prisma.doctor.create({
       data: {
         accessId,
-        firstname,
-        lastname,
+        password: hashedPassword,
+        firstname: firstName,
+        lastname: lastName,
         email,
         specialty,
         qualifications,
         contact,
-        age,
+        age: age.toString(),
         gender,
-        BloodGroup,
+        BloodGroup: bloodGroup,
         address,
-        postalcode,
+        postalcode: postalCode,
         bio,
         photo,
-        organizationId: organizationIdInt,
-        password: hashedPassword,
+        organizationId
       },
     });
 
-     // Generate a default schedule for the doctor
-     const defaultSchedules = [0, 1, 2, 3, 4, 5, 6].map(day => ({
+    // Create default schedules
+    const defaultSchedules = [0, 1, 2, 3, 4, 5, 6].map(day => ({
       doctorId: doctor.id,
       dayOfWeek: day,
       startTime: "09:00",
-      endTime: "21:00",
-      slotDuration: 30, // Default slot duration
+      endTime: "17:00",
+      slotDuration: 30
     }));
 
-    const createdSchedules = await prisma.schedule.createMany({
+    await prisma.schedule.createMany({
       data: defaultSchedules,
     });
-
 
     res.status(201).json({
       message: "Doctor added successfully",
       doctor,
-      doctorId,
-      password,
-      createdSchedules,
+      accessId,
+      password
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Internal Server Error" });
+    if (error.name === 'JsonWebTokenError') {
+      return res.status(401).json({ error: "Invalid token" });
+    }
+    res.status(500).json({ error: "Failed to add doctor" });
   }
 };
 
