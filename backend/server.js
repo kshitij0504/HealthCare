@@ -24,6 +24,7 @@ app.use("/healthorg",healthOrgRoutes)
 app.use("/user",userRoutes)
 app.use("/auth", authRoutes);
 app.use("/details", detailsRoutes);
+app.use("/temp", require("./routes/temproute"));
 
 
 

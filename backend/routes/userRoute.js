@@ -6,7 +6,7 @@ const {
   bookAppointment,
 } = require('../controller/appointment.controller');
 const { authMiddleware } = require('../middleware/authMiddleware');
-const { getAppointment } = require('../controller/details.controller');
+const { getAppointment, userDetails } = require('../controller/details.controller');
 
 router.get('/available-slots', getAvailableSlots);
 router.post('/book-appointment', bookAppointment);
@@ -41,5 +41,7 @@ router.get('/doctors/:organizationId', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch doctors' });
   }
 });
+
+router.get('/user/:userId', authMiddleware, userDetails);
 
 module.exports = router;

@@ -34,11 +34,10 @@ const DoctorDashboard = () => {
   const fetchDoctors = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`http://localhost:5000/healthorg/getDoctor`, {
+      const response = await fetch(`https://curenest.onrender.com/healthorg/getDoctor`, {
         headers: {
           'Content-Type': 'application/json'
         },
-        credentials: "include",
       });
 
       if (!response.ok) {

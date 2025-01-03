@@ -56,7 +56,7 @@ const AppointmentsList = () => {
     try {
       setIsLoading(true);
       const response = await axios.get(
-        `http://localhost:5000/user/appointment/${currentUser.data.id}`,
+        `https://curenest.onrender.com/user/appointment/${currentUser.data.id}`,
         {
           headers: { "Content-Type": "application/json" },
           withCredentials: true,
