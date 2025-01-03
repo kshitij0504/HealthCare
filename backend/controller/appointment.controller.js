@@ -152,6 +152,7 @@ async function bookAppointment(req, res) {
   }
 }
 
+
 module.exports = {
   getAvailableSlots,
   bookAppointment

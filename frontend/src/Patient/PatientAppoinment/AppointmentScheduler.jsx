@@ -1,12 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Calendar, Clock, User, Mail } from "lucide-react";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-} from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import {
   Select,
   SelectContent,
@@ -18,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useSelector } from "react-redux";
 
-const AppointmentScheduler = () => {
+const AppointmentScheduler = ({ onClose, onAppointmentBooked }) => {
   const { currentUser } = useSelector((state) => state.user || {});
   const [organizations, setOrganizations] = useState([]);
   const [doctors, setDoctors] = useState([]);
@@ -27,6 +22,8 @@ const AppointmentScheduler = () => {
   const [selectedDoctor, setSelectedDoctor] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
   const [availableSlots, setAvailableSlots] = useState([]);
+  const [timeSlots, setTimeSlots] = useState([]); // Original slots from backend
+  const [filteredSlots, setFilteredSlots] = useState([]); // Filtered slots
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [patientName, setPatientName] = useState("");
   const [patientEmail, setPatientEmail] = useState("");
@@ -69,9 +66,77 @@ const AppointmentScheduler = () => {
     }
   }, [selectedOrganization]);
 
+  const filterTimeSlots = (slots) => {
+    const now = new Date();
+    const selectedDateTime = new Date(selectedDate);
+    const isToday = selectedDateTime.toDateString() === now.toDateString();
+    
+    // Get current time in minutes since midnight
+    const currentHour = now.getHours();
+    const currentMinute = now.getMinutes();
+    const currentTimeInMinutes = currentHour * 60 + currentMinute;
+    
+    // Add buffer time (e.g., 15 minutes) to prevent booking slots too close to current time
+    const bufferTime = 15;
+    const cutoffTimeInMinutes = currentTimeInMinutes + bufferTime;
+
+    return slots.filter((slot) => {
+      // Convert slot time to minutes since midnight
+      const [slotHours, slotMinutes] = slot.startTime.split(":").map(Number);
+      const slotTimeInMinutes = slotHours * 60 + slotMinutes;
+
+      if (isToday) {
+        // For today, only show slots that are after current time + buffer
+        return slotTimeInMinutes > cutoffTimeInMinutes;
+      }
+      
+      // For future dates, show all slots
+      return true;
+    });
+  };
+
+  useEffect(() => {
+    const fetchTimeSlots = async () => {
+      if (selectedDate && selectedDoctor) {
+        try {
+          const { data } = await axios.get(
+            "http://localhost:5000/user/available-slots",
+            {
+              params: {
+                doctorId: selectedDoctor,
+                date: selectedDate,
+              },
+            }
+          );
+          
+          // Store original slots
+          setTimeSlots(data);
+          
+          // Apply filtering
+          const filtered = filterTimeSlots(data);
+          setAvailableSlots(filtered);
+          
+          // Clear selected slot if it's no longer available
+          if (selectedSlot && !filtered.find(slot => 
+            slot.startTime === selectedSlot.startTime && 
+            slot.endTime === selectedSlot.endTime
+          )) {
+            setSelectedSlot(null);
+          }
+        } catch (error) {
+          console.error("Failed to fetch available slots:", error);
+          setError("Failed to fetch available slots");
+        }
+      }
+    };
+
+    fetchTimeSlots();
+  }, [selectedDate, selectedDoctor]);
+
+
+
   const handleDateSelect = async (date) => {
     setSelectedDate(date);
-    console.log(selectedDoctor)
     try {
       const { data } = await axios.get(
         "http://localhost:5000/user/available-slots",
@@ -82,8 +147,8 @@ const AppointmentScheduler = () => {
           },
         }
       );
-      console.log(data)
-      setAvailableSlots(data);
+      const filteredSlots = filterTimeSlots(data);
+      setAvailableSlots(filteredSlots);
     } catch (error) {
       console.error("Failed to fetch available slots:", error);
     }
@@ -103,15 +168,6 @@ const AppointmentScheduler = () => {
     }
 
     try {
-      console.log({
-        scheduleId: selectedSlot.scheduleId,
-        date: selectedDate,
-        startTime: selectedSlot.startTime,
-        endTime: selectedSlot.endTime,
-        patientName,
-        patientEmail,
-        userId: currentUser.data.id,
-      });
       const { data } = await axios.post(
         "http://localhost:5000/user/book-appointment",
         {
@@ -124,16 +180,35 @@ const AppointmentScheduler = () => {
           userId: currentUser.data.id,
         }
       );
-      console.log(data)
-      setBookingStatus(data.message);
 
-      // Reset form
+      // Create the appointment object for the list
+      const selectedDoctorInfo = doctors.find(d => d.id === selectedDoctor);
+      const selectedOrgInfo = organizations.find(o => o.id === selectedOrganization);
+      
+      const newAppointment = {
+        _id: data.appointmentId, // Assuming the API returns this
+        doctorName: selectedDoctorInfo ? `${selectedDoctorInfo.firstname} ${selectedDoctorInfo.lastname}` : '',
+        organizationName: selectedOrgInfo ? selectedOrgInfo.name : '',
+        date: selectedDate,
+        startTime: selectedSlot.startTime,
+        status: "Scheduled",
+        type: "Consultation"
+      };
+
+      setBookingStatus("Appointment booked successfully!");
+
+      // Notify parent component of successful booking
+      if (onAppointmentBooked) {
+        onAppointmentBooked(newAppointment);
+      }
+
+      // Close modal after short delay to show success message
       setTimeout(() => {
-        setSelectedSlot(null);
-        setPatientName("");
-        setPatientEmail("");
-        setBookingStatus("");
+        if (onClose) {
+          onClose();
+        }
       }, 2000);
+
     } catch (error) {
       console.error("Failed to book appointment:", error);
       setBookingStatus("Failed to book appointment");
@@ -141,22 +216,24 @@ const AppointmentScheduler = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
+    <div className="max-w-4xl mx-auto">
       <Card className="bg-gradient-to-br from-teal-50 to-white">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold text-teal-900">
             Schedule an Appointment
           </CardTitle>
-          <p className="text-teal-600">Book your consultation in few easy steps</p>
+          <p className="text-teal-600">
+            Book your consultation in few easy steps
+          </p>
         </CardHeader>
-        
+
         <CardContent className="space-y-6">
           <div className="space-y-2">
             <label className="text-sm font-medium text-teal-900">
               Select Organization
             </label>
-            <Select 
-              value={selectedOrganization} 
+            <Select
+              value={selectedOrganization}
               onValueChange={setSelectedOrganization}
             >
               <SelectTrigger className="w-full border-teal-200 hover:border-teal-300 focus:ring-teal-500">
@@ -177,17 +254,14 @@ const AppointmentScheduler = () => {
               <label className="text-sm font-medium text-teal-900">
                 Select Doctor
               </label>
-              <Select 
-                value={selectedDoctor} 
-                onValueChange={setSelectedDoctor}
-              >
+              <Select value={selectedDoctor} onValueChange={setSelectedDoctor}>
                 <SelectTrigger className="w-full border-teal-200 hover:border-teal-300 focus:ring-teal-500">
                   <SelectValue placeholder="Select a doctor..." />
                 </SelectTrigger>
                 <SelectContent>
                   {filteredDoctors.map((doctor) => (
                     <SelectItem key={doctor.id} value={doctor.id}>
-                      {doctor.name} - {doctor.specialization}
+                      {doctor.firstname} - {doctor.specialty}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -200,7 +274,10 @@ const AppointmentScheduler = () => {
               Select Date
             </label>
             <div className="relative">
-              <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-teal-500" size={20} />
+              <Calendar
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-teal-500"
+                size={20}
+              />
               <Input
                 type="date"
                 className="pl-10 border-teal-200 hover:border-teal-300 focus:ring-teal-500"
@@ -211,7 +288,7 @@ const AppointmentScheduler = () => {
             </div>
           </div>
 
-          {availableSlots.length > 0 && (
+          {availableSlots.length > 0 ? (
             <div className="space-y-2">
               <label className="text-sm font-medium text-teal-900">
                 Available Slots
@@ -236,6 +313,10 @@ const AppointmentScheduler = () => {
                 ))}
               </div>
             </div>
+          ) : selectedDate && (
+            <div className="text-center text-teal-600">
+              No available slots for the selected date
+            </div>
           )}
 
           {selectedSlot && (
@@ -245,7 +326,10 @@ const AppointmentScheduler = () => {
                   Name
                 </label>
                 <div className="relative">
-                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-teal-500" size={20} />
+                  <User
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-teal-500"
+                    size={20}
+                  />
                   <Input
                     type="text"
                     className="pl-10 border-teal-200 hover:border-teal-300 focus:ring-teal-500"
@@ -255,13 +339,16 @@ const AppointmentScheduler = () => {
                   />
                 </div>
               </div>
-              
+
               <div className="space-y-2">
                 <label className="text-sm font-medium text-teal-900">
                   Email
                 </label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-teal-500" size={20} />
+                  <Mail
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-teal-500"
+                    size={20}
+                  />
                   <Input
                     type="email"
                     className="pl-10 border-teal-200 hover:border-teal-300 focus:ring-teal-500"

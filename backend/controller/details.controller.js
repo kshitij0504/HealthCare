@@ -124,6 +124,52 @@ const getUserDetails = async (req, res) => {
     return res.status(500).json({ message: "Internal server error", success: false });
   }
 };
+const getAppointment = async (req, res) => {
+  const { userId } = req.params;
+
+  if (!userId) {
+    return res.status(400).json({ message: "User ID is required" });
+  }
+
+  try {
+    const appointments = await prisma.appointment.findMany({
+      where: { userId: parseInt(userId) },
+      include: {
+        doctor: {
+          select: {
+            firstname: true,
+            lastname: true,
+            organization: {
+              select: {
+                name: true, // Assuming `name` is the organization's name field
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!appointments || appointments.length === 0) {
+      return res.status(404).json({ message: "No appointments found for this user" });
+    }
+
+    // Combine doctor’s first and last name into a full name and include organization name
+    const formattedAppointments = appointments.map((appointment) => ({
+      ...appointment,
+      doctorName: `${appointment.doctor.firstname} ${appointment.doctor.lastname}`,
+      organizationName: appointment.doctor.organization.name,
+    }));
+
+    res.status(200).json({
+      message: "Appointments retrieved successfully",
+      data: formattedAppointments,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error", success: false });
+  }
+};
 
 
-module.exports = { addDetails, getUserDetails };
+
+module.exports = { addDetails, getUserDetails, getAppointment };

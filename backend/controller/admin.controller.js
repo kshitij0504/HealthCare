@@ -78,13 +78,23 @@ const getAllHealthCareOrganizations = async (req, res) => {
         services: true,
         email: true,
         status: true,
+        _count: {
+          select: {
+            doctors: true, 
+          },
+        },
       },
     });
+    const transformedOrganizations = organizations.map(org => ({
+      ...org,
+      numberOfDoctors: org._count.doctors,
+      numberOfPatients: org._count.appointments, // Assuming 1 appointment = 1 unique patient
+    }));
 
     res.status(200).json({
       status: "success",
       message: "Fetched healthcare organizations successfully",
-      data: organizations,
+      data: transformedOrganizations,
     });
   } catch (error) {
     console.error("Error fetching organizations:", error);
@@ -94,7 +104,6 @@ const getAllHealthCareOrganizations = async (req, res) => {
     });
   }
 };
-
 const getUsers = async (req, res) => {
   try {
     const users = await prisma.user.findMany({
@@ -116,8 +125,39 @@ const getUsers = async (req, res) => {
   }
 };
 
+const getDoctors = async (req, res) => {
+  try {
+    const doctors = await prisma.doctor.findMany({
+      select: {
+        id: true,
+        firstname: true,
+        lastname: true,
+        photo: true,
+        accessId: true,
+        email: true,
+        contact: true,
+        specialty: true,
+        qualifications: true,
+        bio: true,
+        organization: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    });
+
+    return res.status(200).json(doctors);
+  } catch (error) {
+    console.error("Error fetching doctors:", error);
+    return res.status(500).json({ error: "Failed to fetch doctors." });
+  }
+};
+
 module.exports = {
   addHealthCareOrganisation,
   getAllHealthCareOrganizations,
   getUsers,
+  getDoctors,
 };

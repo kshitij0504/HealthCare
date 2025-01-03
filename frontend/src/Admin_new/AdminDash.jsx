@@ -451,7 +451,7 @@ const AdminDashboard_New = () => {
                       <div className="flex items-center gap-2">
                         <UserRound className="h-4 w-4 text-teal-600" />
                         <span>
-                          {org.doctors} Doctors • {org.patients} Patients
+                          {org._count.doctors} Doctors • {org.patients} Patients
                         </span>
                       </div>
                       <div className="flex items-center gap-2">

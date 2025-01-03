@@ -5,9 +5,13 @@ const {
   getAvailableSlots,
   bookAppointment,
 } = require('../controller/appointment.controller');
+const { authMiddleware } = require('../middleware/authMiddleware');
+const { getAppointment } = require('../controller/details.controller');
 
 router.get('/available-slots', getAvailableSlots);
 router.post('/book-appointment', bookAppointment);
+router.get("/appointment/:userId",authMiddleware,getAppointment);
+
 router.get('/organizations', async (req, res) => {
   try {
     const organizations = await prisma.organization.findMany();
