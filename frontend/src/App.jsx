@@ -28,13 +28,9 @@ import HospitalPatientappoinments from "./Hospital/HospitalPatientAppoinment/Hos
 import AdminDashboard_New from "./Admin_new/AdminDash.jsx";
 import AdminHospital from "./Admin_new/Hospital.jsx";
 import AppointmentScheduler from "./Patient/PatientAppoinment/AppointmentScheduler.jsx";
-
-import DoctorDashboard from "./Doctor/Doctordash.jsx";
-import Doctorappoinments from "./Doctor/DoctorAppoinments/Doctorappoinments.jsx";
-import DoctorPatientList from "./Doctor/DoctorPatientList/DoctorPatientlist.jsx";
+import HospitalDetailModel from "./Patient/HospitalCard/HospitalDetailModel.jsx";
+import DoctorDashboard from "./Doctor/DoctorDash.jsx";
 import DoctorPatientRecords from "./Doctor/DoctorPatientRecorsd/Doctorpatientrecords.jsx";
-import DoctorPatientAnalysis from "./Doctor/DoctorPatientAnalysis/Doctorpatientanalysis.jsx";
-import DoctorProfile from "./Doctor/DoctorProfile/Doctorprofile.jsx";
 import AddDoctor from "./Hospital/HospitalDoctorList.jsx/AddDoctor.jsx";
 
 function App() {
@@ -42,13 +38,13 @@ function App() {
     <>
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        <Route path="/contact" element={<ContactUs/>}/>
+        <Route path="/contact" element={<ContactUs />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/signin" element={<SignIn />} />
-        
+
         <Route path="/patientform" element={<PatientForm />} />
         <Route path="/map" element={<HospitalLocator />} />
-        
+
         <Route path="/patientdash" element={<Patientdash />} />
         <Route path="/patientprofile" element={<PatientProfile />} />
         <Route path="/patient-appointments" element={<Patientappoinments />} />
@@ -59,62 +55,53 @@ function App() {
         <Route path="/hospitaldash" element={<Hospitaldash />} />
         <Route path="/hospital-doctorlist" element={<HospitalDoctorList />} />
         <Route path="/hospital-patientlist" element={<HospitalPatientList />} />
-        <Route path="/adddoctor" element={<AddDoctor/>}/>
-       
-       
+        <Route path="/adddoctor" element={<AddDoctor />} />
+
         <Route path="/doctordash" element={<DoctorDashboard />} />
-        <Route path="/doctor-appointments" element={<Doctorappoinments />} />
-        <Route path="/doctor-patientlist" element={<DoctorPatientList />} />
         <Route
           path="/doctor-patient-records"
           element={<DoctorPatientRecords />}
         />
-        <Route
-          path="/doctor-patient-analytics"
-          element={<DoctorPatientAnalysis />}
-        />
-        <Route path="/doctor-profile" element={<DoctorProfile />} />
-
-
         <Route path="/adminlogin" element={<SuperAdminLogin />} />
         <Route path="/admindash" element={<Admindash />} />
-        <Route path="/admin-hosp" element={<AdminHospital/>}/>
+        <Route path="/admin-hosp" element={<AdminHospital />} />
         <Route
           path="/hospital-patient-appoinment"
           element={<HospitalPatientappoinments />}
         />
         <Route
-        path="/admin-patient-appointments"
-        element={
-          <AdminRoute>
-            <PatientTable />
-          </AdminRoute>
-        }
-      />
-      <Route
-        path="/admin-doctors"
-        element={
-          <AdminRoute>
-            <AdminDoctorList />
-          </AdminRoute>
-        }
-      />
-      <Route
-        path="/admin-patients"
-        element={
-          <AdminRoute>
-            <AdminPatient />
-          </AdminRoute>
-        }
-      />
-      <Route
-        path="/admin/dashboard"
-        element={
-          <AdminRoute>
-            <AdminDashboard_New />
-          </AdminRoute>
-        }
-      />
+          path="/admin-patient-appointments"
+          element={
+            <AdminRoute>
+              <PatientTable />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin-doctors"
+          element={
+            <AdminRoute>
+              <AdminDoctorList />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin-patients"
+          element={
+            <AdminRoute>
+              <AdminPatient />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/dashboard"
+          element={
+            <AdminRoute>
+              <AdminDashboard_New />
+            </AdminRoute>
+          }
+        />
+        <Route path="/hospitaldetailmodule" element={<HospitalDetailModel />} />
       </Routes>
     </>
   );

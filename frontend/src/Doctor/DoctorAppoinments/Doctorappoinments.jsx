@@ -1,200 +1,191 @@
 import React, { useState } from "react";
-import { useLocation } from "react-router-dom";
 import {
+  Menu,
+  X,
+  Home,
+  Users,
   Calendar,
-  Clock,
-  Phone,
-  Mail,
-  MapPin,
+  FileText,
+  Settings,
+  Bell,
   Search,
-  Filter,
-  Plus,
+  ChevronDown,
+  ArrowLeftToLine,
+  ArrowRightToLine,
+  LayoutPanelTop,
 } from "lucide-react";
-import Sidebar from "../Doctorsidebar";
 
-const PatientAppointments = () => {
-  const [selectedPatient, setSelectedPatient] = useState(null);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [isSidebarOpen, setSidebarOpen] = useState(true);
-  const [activeTab, setActiveTab] = useState("appointments");
-  const location = useLocation();
+const DoctorDashboard = () => {
+  const [sidebarState, setSidebarState] = useState("full"); // 'full', 'mini', 'closed'
 
-  const appointments = [
-    {
-      id: 1,
-      name: "John Smith",
-      date: "2025-01-15",
-      time: "09:00 AM",
-      type: "Check-up",
-      status: "Scheduled",
-      email: "john.smith@email.com",
-      phone: "(555) 123-4567",
-      address: "123 Main St, City, State",
-      age: 45,
-      lastVisit: "2024-12-01",
-      medicalHistory: "Hypertension, Diabetes",
-      upcomingVisits: 2,
-    },
-    {
-      id: 2,
-      name: "Sarah Johnson",
-      date: "2025-01-15",
-      time: "10:30 AM",
-      type: "Follow-up",
-      status: "Confirmed",
-      email: "sarah.j@email.com",
-      phone: "(555) 987-6543",
-      address: "456 Oak Ave, City, State",
-      age: 32,
-      lastVisit: "2024-12-15",
-      medicalHistory: "Asthma",
-      upcomingVisits: 1,
-    },
+  const toggleSidebar = (state) => {
+    setSidebarState(state);
+  };
+
+  const getSidebarWidth = () => {
+    switch (sidebarState) {
+      case "full":
+        return "w-64";
+      case "mini":
+        return "w-20";
+      case "closed":
+        return "w-0";
+      default:
+        return "w-64";
+    }
+  };
+
+  const stats = [
+    { label: "Total Patients", value: "1,234" },
+    { label: "Today's Appointments", value: "28" },
+    { label: "Pending Reports", value: "15" },
+    { label: "Total Revenue", value: "$12,345" },
   ];
 
-  const filteredAppointments = appointments.filter((appointment) =>
-    appointment.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const appointments = [
+    { id: 1, name: "Sarah Johnson", time: "09:00 AM", type: "Check-up" },
+    { id: 2, name: "Mike Peters", time: "10:30 AM", type: "Follow-up" },
+    { id: 3, name: "Emma Wilson", time: "02:00 PM", type: "Consultation" },
+  ];
+
+  const navigationItems = [
+    { icon: Home, text: "Dashboard" },
+    { icon: Users, text: "Patients" },
+    { icon: Calendar, text: "Appointments" },
+    { icon: FileText, text: "Reports" },
+    { icon: Settings, text: "Settings" },
+  ];
 
   return (
-    <div className="flex min-h-screen">
-      <Sidebar
-        isSidebarOpen={isSidebarOpen}
-        setSidebarOpen={setSidebarOpen}
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        location={location}
-      />
+    <div className="flex h-screen bg-gray-100">
+      {/* Sidebar */}
       <div
-        className={`flex-1 ${
-          isSidebarOpen ? "ml-64" : "ml-20"
-        } p-6 transition-all duration-300`}
+        className={`fixed md:relative transition-all duration-300 h-full bg-white shadow-lg ${getSidebarWidth()}`}
       >
-        <div className="bg-white">
-          <div className="mb-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900">
-                  Patient Appointments
-                </h2>
-                <p className="text-gray-500">Manage your daily appointments</p>
-              </div>
-            </div>
+        <div className="flex flex-col h-full">
+          <div className="p-4 border-b flex justify-between items-center">
+            {sidebarState !== "mini" && (
+              <h2 className="text-xl font-bold text-blue-600">Dr. Dashboard</h2>
+            )}
+            {sidebarState === "mini" && (
+              <LayoutPanelTop className="text-blue-600" />
+            )}
           </div>
 
-          <div className="overflow-hidden rounded-lg border border-gray-200">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Patient Name
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Date
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Time
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Type
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Status
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {filteredAppointments.map((appointment) => (
-                  <tr
-                    key={appointment.id}
-                    className="hover:bg-gray-50 cursor-pointer transition-colors"
-                    onClick={() => setSelectedPatient(appointment)}
-                  >
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="font-medium text-gray-900">
-                        {appointment.name}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-gray-500">
-                      {appointment.date}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-gray-500">
-                      {appointment.time}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-gray-500">
-                      {appointment.type}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span
-                        className={`px-3 py-1 rounded-full text-sm font-medium
-                        ${
-                          appointment.status === "Confirmed"
-                            ? "bg-green-100 text-green-800"
-                            : "bg-blue-100 text-blue-800"
-                        }`}
-                      >
-                        {appointment.status}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <nav className="flex-1 p-4 space-y-2">
+            {navigationItems.map((item, index) => (
+              <button
+                key={index}
+                className="flex items-center w-full p-3 text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-600"
+              >
+                <item.icon className="w-5 h-5" />
+                {sidebarState === "full" && (
+                  <span className="ml-3">{item.text}</span>
+                )}
+              </button>
+            ))}
+          </nav>
         </div>
+      </div>
 
-        {selectedPatient && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg shadow-lg w-full max-w-md">
-              <div className="p-6">
-                <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-xl font-semibold">
-                    Patient Details: {selectedPatient.name}
-                  </h3>
-                  <button
-                    onClick={() => setSelectedPatient(null)}
-                    className="text-gray-500 hover:text-gray-700"
-                  >
-                    ✕
-                  </button>
-                </div>
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3">
-                    <Mail className="w-5 h-5 text-gray-500" />
-                    <span>{selectedPatient.email}</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Phone className="w-5 h-5 text-gray-500" />
-                    <span>{selectedPatient.phone}</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <MapPin className="w-5 h-5 text-gray-500" />
-                    <span>{selectedPatient.address}</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Calendar className="w-5 h-5 text-gray-500" />
-                    <span>{selectedPatient.date}</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Clock className="w-5 h-5 text-gray-500" />
-                    <span>{selectedPatient.time}</span>
-                  </div>
-                  <div className="border-t pt-4 mt-4">
-                    <h4 className="font-semibold mb-3">Medical Information</h4>
-                    <div className="space-y-2 text-sm">
-                      <p>Age: {selectedPatient.age} years</p>
-                      <p>Last Visit: {selectedPatient.lastVisit}</p>
-                      <p>Medical History: {selectedPatient.medicalHistory}</p>
-                    </div>
-                  </div>
-                </div>
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Header */}
+        <header className="bg-white shadow-sm">
+          <div className="flex items-center justify-between p-4">
+            <div className="flex space-x-2">
+              <button
+                onClick={() => toggleSidebar("full")}
+                className="p-2 rounded-lg hover:bg-gray-100"
+                title="Full Sidebar"
+              >
+                <Menu />
+              </button>
+              <button
+                onClick={() => toggleSidebar("mini")}
+                className="p-2 rounded-lg hover:bg-gray-100"
+                title="Mini Sidebar"
+              >
+                <ArrowLeftToLine />
+              </button>
+              <button
+                onClick={() => toggleSidebar("closed")}
+                className="p-2 rounded-lg hover:bg-gray-100"
+                title="Close Sidebar"
+              >
+                <ArrowRightToLine />
+              </button>
+            </div>
+
+            <div className="flex items-center flex-1 px-4 space-x-4">
+              <div className="relative flex-1 max-w-md">
+                <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
+                />
               </div>
+              <button className="p-2 text-gray-500 hover:text-gray-700">
+                <Bell className="w-6 h-6" />
+              </button>
             </div>
           </div>
-        )}
+        </header>
+
+        {/* Main Content Area */}
+        <main className="flex-1 overflow-y-auto p-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            {stats.map((stat, index) => (
+              <div key={index} className="bg-white p-6 rounded-lg shadow-sm">
+                <p className="text-gray-500 text-sm">{stat.label}</p>
+                <p className="text-2xl font-bold text-gray-800 mt-2">
+                  {stat.value}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          <div className="bg-white rounded-lg shadow-sm p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-lg font-semibold">Today's Appointments</h3>
+              <button className="flex items-center text-blue-600 hover:text-blue-700">
+                <span className="mr-2">View All</span>
+                <ChevronDown className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="text-left text-gray-500 border-b">
+                    <th className="pb-3">Patient Name</th>
+                    <th className="pb-3">Time</th>
+                    <th className="pb-3">Type</th>
+                    <th className="pb-3">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {appointments.map((app) => (
+                    <tr key={app.id} className="border-b">
+                      <td className="py-4">{app.name}</td>
+                      <td className="py-4">{app.time}</td>
+                      <td className="py-4">{app.type}</td>
+                      <td className="py-4">
+                        <button className="px-4 py-2 text-sm text-blue-600 hover:text-blue-700">
+                          View Details
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </main>
       </div>
     </div>
   );
 };
 
-export default PatientAppointments;
+export default DoctorDashboard;

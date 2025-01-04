@@ -13,20 +13,20 @@ const AppointmentsList = () => {
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
+    return date.toLocaleDateString("en-US", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
   };
 
   const formatTime = (dateString) => {
     const date = new Date(dateString);
-    return date.toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true
+    return date.toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
     });
   };
 
@@ -35,7 +35,7 @@ const AppointmentsList = () => {
       Scheduled: "bg-teal-100 text-teal-600",
       Confirmed: "bg-emerald-100 text-emerald-600",
       Pending: "bg-amber-100 text-amber-600",
-      Cancelled: "bg-red-100 text-red-600"
+      Cancelled: "bg-red-100 text-red-600",
     };
     return colors[status] || "bg-gray-100 text-gray-600";
   };
@@ -48,7 +48,9 @@ const AppointmentsList = () => {
   };
 
   const handleAddAppointment = (newAppointment) => {
-    setAppointments(prev => Array.isArray(prev) ? [...prev, newAppointment] : [newAppointment]);
+    setAppointments((prev) =>
+      Array.isArray(prev) ? [...prev, newAppointment] : [newAppointment]
+    );
     setShowModal(false);
   };
 
@@ -62,7 +64,9 @@ const AppointmentsList = () => {
           withCredentials: true,
         }
       );
-      setAppointments(Array.isArray(response.data.data) ? response.data.data : []);
+      setAppointments(
+        Array.isArray(response.data.data) ? response.data.data : []
+      );
     } catch (error) {
       console.error("Error fetching appointments:", error);
       setAppointments([]);
@@ -78,30 +82,19 @@ const AppointmentsList = () => {
   const filteredAppointments = getFilteredAppointments();
 
   return (
-    <div className="min-h-screen bg-white p-6">
+    <div className="min-h-screen bg-white">
       <Card className="bg-white shadow-lg">
         <CardContent className="p-6">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
-            <h2 className="text-2xl font-bold text-gray-800">My Appointments</h2>
+            <h2 className="text-2xl font-bold text-gray-800">
+              My Appointments
+            </h2>
             <button
               onClick={() => setShowModal(true)}
               className="bg-teal-500 hover:bg-teal-600 text-white px-6 py-2 rounded-lg shadow-md transition-colors duration-200"
             >
               Add Appointment
             </button>
-          </div>
-
-          <div className="mb-6">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Search by Doctor..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 pr-4 py-3 rounded-lg w-full border border-gray-200 focus:outline-none focus:ring-2 focus:ring-teal-500"
-              />
-              <Search className="w-5 h-5 absolute left-3 top-3.5 text-gray-400" />
-            </div>
           </div>
 
           {isLoading ? (
@@ -121,18 +114,18 @@ const AppointmentsList = () => {
                       {appointment.doctorName}
                     </h3>
                   </div>
-                  
+
                   <div className="space-y-2 text-gray-600">
                     <div className="flex items-center gap-2">
                       <Building2 className="w-4 h-4 text-teal-500" />
                       <span>{appointment.organizationName}</span>
                     </div>
-                    
+
                     <div className="flex items-center gap-2">
                       <Calendar className="w-4 h-4 text-teal-500" />
                       <span>{formatDate(appointment.date)}</span>
                     </div>
-                    
+
                     <div className="flex items-center gap-2">
                       <Clock className="w-4 h-4 text-teal-500" />
                       <span>{formatTime(appointment.startTime)}</span>

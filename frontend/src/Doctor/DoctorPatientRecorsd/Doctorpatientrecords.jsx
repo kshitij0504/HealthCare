@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Plus } from "lucide-react";
-import Sidebar from "../Doctorsidebar";
+import Sidebar from "../DoctorSidebar/Doctorsidebar";
 import { useLocation } from "react-router-dom";
 
 const DoctorPatientRecords = () => {

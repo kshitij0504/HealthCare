@@ -1,20 +1,18 @@
-import React from 'react';
+import React from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import AppointmentScheduler from './AppointmentScheduler';
+import AppointmentScheduler from "./AppointmentScheduler";
 
 const AppointmentModal = ({ onClose, onAddAppointment }) => {
-  // Function to handle successful appointment booking
   const handleAppointmentBooked = (appointmentData) => {
-    // Pass the new appointment data to parent component
     onAddAppointment(appointmentData);
-    // Close the modal
     onClose();
   };
 
   return (
     <Dialog open={true} onOpenChange={onClose}>
-      <DialogContent className="max-w-5xl">
-        <AppointmentScheduler 
+      <DialogContent className="max-h-[100vh] max-w-4xl overflow-y-auto">
+        {" "}
+        <AppointmentScheduler
           onClose={onClose}
           onAppointmentBooked={handleAppointmentBooked}
         />
