@@ -70,7 +70,7 @@ const AdminDashboard_New = () => {
   const fetchOrganizations = async () => {
     try {
       setLoading(true);
-      const response = await axios.get("http://localhost:5000/admin/org", {
+      const response = await axios.get("https://curenest.onrender.com/admin/org", {
         withCredentials: true,
       });
       setOrganizations(response.data.data);
