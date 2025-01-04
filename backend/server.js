@@ -25,8 +25,7 @@ app.use("/healthorg",healthOrgRoutes)
 app.use("/user",userRoutes)
 app.use("/auth", authRoutes);
 app.use("/details", detailsRoutes);
-app.use("/temp", require("./routes/temproute"));
-
+app.use("/doctor",doctorRoutes);
 
 
 const PORT = process.env.PORT || 5000;
