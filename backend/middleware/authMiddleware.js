@@ -32,5 +32,29 @@ const authenticateHealthOrg = (req, res, next) => {
   });
 };
 
+const doctorAuthMiddleware = (req, res, next) => {
+  const token = req.cookies.doctorToken // Token should be sent in the headers
 
-module.exports = {authMiddleware, authenticateHealthOrg};
+  if (!token) {
+    return res.status(401).json({ error: 'Access token is missing' });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || "your-secret-key"); // Replace with your JWT secret
+    const doctorId = decoded.id; // Assuming the token payload contains the doctor ID as id
+
+    if (!doctorId) {
+      return res.status(400).json({ error: 'Invalid token payload' });
+    }
+
+    req.doctorId = doctorId; 
+    next();
+  } catch (error) {
+    console.error('Error decoding token:', error);
+    res.status(401).json({ error: 'Invalid or expired token' });
+  }
+};
+
+
+
+module.exports = {authMiddleware, authenticateHealthOrg, doctorAuthMiddleware};

@@ -53,7 +53,7 @@ const AppointmentScheduler = ({ onClose, onAppointmentBooked }) => {
       const fetchDoctors = async () => {
         try {
           const { data } = await axios.get(
-            `http://localhost:5000/user/doctors/${selectedOrganization}`
+           `http://localhost:5000/user/doctors/${selectedOrganization}`
           );
           setDoctors(data);
           setFilteredDoctors(data);
@@ -191,10 +191,8 @@ const AppointmentScheduler = ({ onClose, onAppointmentBooked }) => {
 
       const newAppointment = {
         _id: data.appointmentId, // Assuming the API returns this
-        doctorName: selectedDoctorInfo
-          ? `${selectedDoctorInfo.firstname} ${selectedDoctorInfo.lastname}`
-          : "",
-        organizationName: selectedOrgInfo ? selectedOrgInfo.name : "",
+        doctorName: selectedDoctorInfo ? `${selectedDoctorInfo.firstname} ${selectedDoctorInfo.lastname}` : '',
+        organizationName: selectedOrgInfo ? selectedOrgInfo.name : '',
         date: selectedDate,
         startTime: selectedSlot.startTime,
         status: "Scheduled",

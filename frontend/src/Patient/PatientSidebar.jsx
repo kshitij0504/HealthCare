@@ -7,7 +7,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
     { icon: BarChart, label: "Dashboard", path: "/patientdash" },
     { icon: Calendar, label: "Appointments", path: "/patient-appointments" },
     { icon: Bed, label: "Hospitals", path: "/hospital-card" },
-    { icon: MapPin, label: "Find Hospitals", path: "/find-hospitals" },
+    { icon: MapPin, label: "Find Hospitals", path: "/map" },
     { icon: User, label: "Profile", path: "/patientprofile" },
     { icon: LogOut, label: "Sign Out", path: "/signin" },
   ];
