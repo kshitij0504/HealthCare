@@ -13,7 +13,7 @@ const AppointmentModal = ({ onClose, onAddAppointment }) => {
 
   return (
     <Dialog open={true} onOpenChange={onClose}>
-      <DialogContent className="max-w-5xl">
+      <DialogContent className="max-h-[100vh] max-w-4xl overflow-y-auto">
         <AppointmentScheduler 
           onClose={onClose}
           onAppointmentBooked={handleAppointmentBooked}

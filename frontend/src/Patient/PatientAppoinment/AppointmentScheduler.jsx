@@ -53,7 +53,7 @@ const AppointmentScheduler = ({ onClose, onAppointmentBooked }) => {
       const fetchDoctors = async () => {
         try {
           const { data } = await axios.get(
-            `http://localhost:5000/user/doctors/${selectedOrganization}`
+           `http://localhost:5000/user/doctors/${selectedOrganization}`
           );
           setDoctors(data);
           setFilteredDoctors(data);
@@ -70,12 +70,12 @@ const AppointmentScheduler = ({ onClose, onAppointmentBooked }) => {
     const now = new Date();
     const selectedDateTime = new Date(selectedDate);
     const isToday = selectedDateTime.toDateString() === now.toDateString();
-    
+
     // Get current time in minutes since midnight
     const currentHour = now.getHours();
     const currentMinute = now.getMinutes();
     const currentTimeInMinutes = currentHour * 60 + currentMinute;
-    
+
     // Add buffer time (e.g., 15 minutes) to prevent booking slots too close to current time
     const bufferTime = 15;
     const cutoffTimeInMinutes = currentTimeInMinutes + bufferTime;
@@ -89,7 +89,7 @@ const AppointmentScheduler = ({ onClose, onAppointmentBooked }) => {
         // For today, only show slots that are after current time + buffer
         return slotTimeInMinutes > cutoffTimeInMinutes;
       }
-      
+
       // For future dates, show all slots
       return true;
     });
@@ -108,19 +108,23 @@ const AppointmentScheduler = ({ onClose, onAppointmentBooked }) => {
               },
             }
           );
-          
+
           // Store original slots
           setTimeSlots(data);
-          
+
           // Apply filtering
           const filtered = filterTimeSlots(data);
           setAvailableSlots(filtered);
-          
+
           // Clear selected slot if it's no longer available
-          if (selectedSlot && !filtered.find(slot => 
-            slot.startTime === selectedSlot.startTime && 
-            slot.endTime === selectedSlot.endTime
-          )) {
+          if (
+            selectedSlot &&
+            !filtered.find(
+              (slot) =>
+                slot.startTime === selectedSlot.startTime &&
+                slot.endTime === selectedSlot.endTime
+            )
+          ) {
             setSelectedSlot(null);
           }
         } catch (error) {
@@ -132,8 +136,6 @@ const AppointmentScheduler = ({ onClose, onAppointmentBooked }) => {
 
     fetchTimeSlots();
   }, [selectedDate, selectedDoctor]);
-
-
 
   const handleDateSelect = async (date) => {
     setSelectedDate(date);
@@ -182,17 +184,21 @@ const AppointmentScheduler = ({ onClose, onAppointmentBooked }) => {
       );
 
       // Create the appointment object for the list
-      const selectedDoctorInfo = doctors.find(d => d.id === selectedDoctor);
-      const selectedOrgInfo = organizations.find(o => o.id === selectedOrganization);
-      
+      const selectedDoctorInfo = doctors.find((d) => d.id === selectedDoctor);
+      const selectedOrgInfo = organizations.find(
+        (o) => o.id === selectedOrganization
+      );
+
       const newAppointment = {
         _id: data.appointmentId, // Assuming the API returns this
-        doctorName: selectedDoctorInfo ? `${selectedDoctorInfo.firstname} ${selectedDoctorInfo.lastname}` : '',
-        organizationName: selectedOrgInfo ? selectedOrgInfo.name : '',
+        doctorName: selectedDoctorInfo
+          ?` ${selectedDoctorInfo.firstname} ${selectedDoctorInfo.lastname}`
+          : "",
+        organizationName: selectedOrgInfo ? selectedOrgInfo.name : "",
         date: selectedDate,
         startTime: selectedSlot.startTime,
         status: "Scheduled",
-        type: "Consultation"
+        type: "Consultation",
       };
 
       setBookingStatus("Appointment booked successfully!");
@@ -208,7 +214,6 @@ const AppointmentScheduler = ({ onClose, onAppointmentBooked }) => {
           onClose();
         }
       }, 2000);
-
     } catch (error) {
       console.error("Failed to book appointment:", error);
       setBookingStatus("Failed to book appointment");
@@ -216,8 +221,8 @@ const AppointmentScheduler = ({ onClose, onAppointmentBooked }) => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <Card className="bg-gradient-to-br from-teal-50 to-white">
+    <div>
+      <div className="w-100">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold text-teal-900">
             Schedule an Appointment
@@ -313,10 +318,12 @@ const AppointmentScheduler = ({ onClose, onAppointmentBooked }) => {
                 ))}
               </div>
             </div>
-          ) : selectedDate && (
-            <div className="text-center text-teal-600">
-              No available slots for the selected date
-            </div>
+          ) : (
+            selectedDate && (
+              <div className="text-center text-teal-600">
+                No available slots for the selected date
+              </div>
+            )
           )}
 
           {selectedSlot && (
@@ -380,7 +387,7 @@ const AppointmentScheduler = ({ onClose, onAppointmentBooked }) => {
             </div>
           )}
         </CardContent>
-      </Card>
+      </div>
     </div>
   );
 };

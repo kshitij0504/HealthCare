@@ -1,54 +1,74 @@
 import React from "react";
-import { Star, Clock, MapPin } from "lucide-react";
+import { MapPin, Phone, Mail, Star, ArrowRight } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
-const DoctorCard = ({ doctor, onBookAppointment }) => (
-  <div className="bg-white rounded-2xl p-6 shadow-sm">
-    <div className="flex gap-6">
-      <img
-        src="/api/placeholder/92/92"
-        alt={doctor.name}
-        className="rounded-full w-[92px] h-[92px]"
-      />
-      <div className="flex-1">
-        <div className="flex justify-between items-start">
-          <div>
-            <h3 className="text-xl font-semibold text-gray-800 mb-1">
-              {doctor.name}
+const HospitalCard = ({ hospital, onClick }) => {
+  return (
+    <Card className="w-1/2 hover:shadow-lg transition-all duration-300 group bg-white border border-gray-200 rounded-lg">
+      <CardContent className="p-5">
+        <div className="flex justify-between items-start mb-4">
+          <div className="space-y-1">
+            <h3 className="text-xl font-semibold text-gray-800 group-hover:text-teal-600 transition-colors">
+              {hospital.name}
             </h3>
-            <p className="text-gray-500 text-sm mb-1">{doctor.degrees}</p>
-            <p className="text-gray-700 text-sm">
-              ${doctor.consultationFee} Consultation Fee
-            </p>
+            <div className="flex items-center text-gray-600 text-sm">
+              <MapPin className="w-4 h-4 mr-2" />
+              <span>{hospital.address}</span>
+            </div>
           </div>
-          <div className="bg-blue-50 text-blue-800 px-4 py-1.5 rounded-full text-sm whitespace-nowrap">
-            {doctor.speciality}
-          </div>
-        </div>
-        <div className="flex flex-wrap items-center gap-6 mt-6">
-          <div className="flex items-center gap-2 bg-orange-50 px-3 py-1.5 rounded-full">
-            <Star className="w-4 h-4 text-orange-400 fill-current" />
-            <span className="text-gray-700 text-sm">{doctor.rating}/5</span>
-          </div>
-          <div className="flex items-center gap-2 bg-blue-50 px-3 py-1.5 rounded-full">
-            <Clock className="w-4 h-4 text-blue-500" />
-            <span className="text-gray-700 text-sm">{doctor.experience}</span>
-          </div>
-          <div className="flex items-center gap-2 bg-orange-50 px-3 py-1.5 rounded-full">
-            <MapPin className="w-4 h-4 text-orange-400" />
-            <span className="text-gray-700 text-sm">{doctor.location}</span>
-          </div>
-        </div>
-        <div className="flex justify-end mt-6">
-          <button
-            className="bg-blue-600 text-white px-4 py-2 text-sm rounded-lg hover:bg-blue-700 transition-colors font-medium"
-            onClick={() => onBookAppointment(doctor)}
-          >
-            Book Appointment
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-);
 
-export default DoctorCard;
+          <div className="flex items-center gap-3">
+            {hospital.rating && (
+              <Badge className="bg-yellow-50 text-yellow-700 text-xs px-3 py-1 flex items-center gap-1 rounded-full">
+                <Star className="w-3 h-3 fill-current" />
+                {hospital.rating}
+              </Badge>
+            )}
+            <Button
+              onClick={onClick}
+              size="sm"
+              variant="ghost"
+              className="h-9 px-4 hover:bg-teal-100 text-teal-600 rounded-md transition-colors"
+            >
+              <span className="sr-only">View Details</span>
+              <ArrowRight className="w-4 h-4 text-teal-600" />
+            </Button>
+          </div>
+        </div>
+
+        <div className="flex gap-6 mb-5">
+          {hospital.contact && (
+            <div className="flex items-center text-gray-600 text-sm">
+              <Phone className="w-4 h-4 mr-2" />
+              <span>{hospital.contact}</span>
+            </div>
+          )}
+          {hospital.email && (
+            <div className="flex items-center text-gray-600 text-sm">
+              <Mail className="w-4 h-4 mr-2" />
+              <span>{hospital.email}</span>
+            </div>
+          )}
+        </div>
+
+        {hospital.services && hospital.services.length > 0 && (
+          <div className="flex flex-wrap gap-2">
+            {hospital.services.map((service, index) => (
+              <Badge
+                key={index}
+                variant="secondary"
+                className="bg-teal-50 text-teal-700 text-xs px-3 py-1 rounded-full"
+              >
+                {service}
+              </Badge>
+            ))}
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+};
+
+export default HospitalCard;

@@ -36,7 +36,7 @@ import DoctorPatientRecords from "./Doctor/DoctorPatientRecorsd/Doctorpatientrec
 import DoctorPatientAnalysis from "./Doctor/DoctorPatientAnalysis/Doctorpatientanalysis.jsx";
 import DoctorProfile from "./Doctor/DoctorProfile/Doctorprofile.jsx";
 import AddDoctor from "./Hospital/HospitalDoctorList.jsx/AddDoctor.jsx";
-
+import HospitalDetailModel from "./Patient/HospitalCard/HospitalDetailModel.jsx";
 function App() {
   return (
     <>
@@ -53,6 +53,7 @@ function App() {
         <Route path="/patientprofile" element={<PatientProfile />} />
         <Route path="/patient-appointments" element={<Patientappoinments />} />
         <Route path="/patientschedule" element={<AppointmentScheduler />} />
+        <Route path="/hospitaldetailmodule" element={<HospitalDetailModel />} />
 
         <Route path="/healthanddoc" element={<LoginPage />} />
         <Route path="/hospital-card" element={<HospitalCard />} />

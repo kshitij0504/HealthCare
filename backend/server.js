@@ -4,6 +4,7 @@ const authRoutes = require("./routes/authRoute");
 const detailsRoutes = require("./routes/detailsRoute");
 const adminRoutes = require("./routes/adminRoute")
 const userRoutes = require("./routes/userRoute")
+const doctorRoutes= require("./routes/doctorRoute")
 const healthOrgRoutes = require("./routes/healthOrgRoute")
 const cookieParser = require("cookie-parser");
 const cors = require("cors")
@@ -24,7 +25,7 @@ app.use("/healthorg",healthOrgRoutes)
 app.use("/user",userRoutes)
 app.use("/auth", authRoutes);
 app.use("/details", detailsRoutes);
-
+app.use("/doctor",doctorRoutes);
 
 
 const PORT = process.env.PORT || 5000;
