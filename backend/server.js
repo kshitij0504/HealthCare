@@ -25,12 +25,7 @@ app.use("/healthorg",healthOrgRoutes)
 app.use("/user",userRoutes)
 app.use("/auth", authRoutes);
 app.use("/details", detailsRoutes);
-<<<<<<< HEAD
 app.use("/doctor",doctorRoutes);
-=======
-app.use("/temp", require("./routes/temproute"));
-
->>>>>>> fa0d51fa8cfd433b94e7e6d1222c773c2eeca265
 
 
 const PORT = process.env.PORT || 5000;
