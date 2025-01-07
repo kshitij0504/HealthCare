@@ -1,8 +1,6 @@
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { TrendingUp, Users, Clock } from "lucide-react";
-import { Bell, Search } from "lucide-react";
-import { Menu } from "lucide-react";
+import { TrendingUp, Users, Clock, Bell, Search, Menu } from "lucide-react";
 
 const MainContent = ({ sidebarOpen, setSidebarOpen }) => {
   const stats = [
@@ -20,11 +18,14 @@ const MainContent = ({ sidebarOpen, setSidebarOpen }) => {
     <div className="md:ml-64 min-h-screen">
       <header className="bg-white shadow-sm">
         <div className="flex items-center justify-between px-4 py-4">
-          <button onClick={() => setSidebarOpen(true)} className="md:hidden">
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="md:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors"
+          >
             <Menu className="w-6 h-6 text-gray-500" />
           </button>
 
-          <div className="flex items-center flex-1 px-4 md:px-6">
+          <div className="flex items-center flex-1 px-4 md:px-6 mb-2">
             <div className="max-w-md w-full relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
               <input

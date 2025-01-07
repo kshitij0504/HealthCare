@@ -1,89 +1,106 @@
 import React from "react";
+import { Eye, MoreVertical, Loader2 } from "lucide-react";
 
-const PatientTable = ({ patients, handleViewDetails }) => {
-  return (
-    <div className="px-4 sm:px-6 lg:px-8 py-8">
-      <div className="flow-root">
-        <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-          <div className="inline-block min-w-full py-2 align-middle">
-            <table className="min-w-full divide-y divide-gray-300 shadow-sm rounded-lg">
-              <thead className="bg-gray-100">
-                <tr>
-                  <th className="px-6 py-4 text-left text-sm font-bold text-gray-900">
-                    Patient Name
-                  </th>
-                  <th className="px-6 py-4 text-left text-sm font-bold text-gray-900">
-                    DOB
-                  </th>
-                  <th className="px-6 py-4 text-left text-sm font-bold text-gray-900">
-                    Consulting Doctor
-                  </th>
-                  <th className="px-6 py-4 text-left text-sm font-bold text-gray-900">
-                    Department
-                  </th>
-                  <th className="px-6 py-4 text-left text-sm font-bold text-gray-900">
-                    Appointment Time
-                  </th>
-                  <th className="px-6 py-4 text-left text-sm font-bold text-gray-900">
-                    Action
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200 bg-white">
-                {patients.map((patient) => (
-                  <tr
-                    key={patient.id}
-                    className="hover:bg-gray-50 transition-colors"
-                  >
-                    <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-700">
-                      {patient.name}
-                    </td>
-                    <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-700">
-                      {patient.DOB}
-                    </td>
-                    <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-700">
-                      {patient.doctor.name}
-                    </td>
-                    <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-700">
-                      {patient.doctor.department}
-                    </td>
-                    <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-700">
-                      {patient.time}
-                    </td>
-                    <td className="whitespace-nowrap px-6 py-4 text-sm">
-                      <button
-                        onClick={() => handleViewDetails(patient)}
-                        className="text-blue-600 hover:text-blue-900 focus:outline-none"
-                        aria-label="View Details"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          strokeWidth={1.5}
-                          stroke="currentColor"
-                          className="w-6 h-6"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                          />
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                          />
-                        </svg>
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+const PatientTable = ({ patients, handleViewDetails, isLoading }) => {
+  if (isLoading) {
+    return (
+      <div className="min-h-[400px] flex items-center justify-center">
+        <div className="text-center space-y-3">
+          <Loader2 className="h-8 w-8 animate-spin text-teal-500 mx-auto" />
+          <p className="text-gray-500">Loading patients...</p>
         </div>
       </div>
+    );
+  }
+
+  return (
+    <div className="overflow-x-auto">
+      <table className="w-full">
+        <thead>
+          <tr className="bg-gray-50">
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Patient Name
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Email
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Username
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Appointments
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Status
+            </th>
+            <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Actions
+            </th>
+          </tr>
+        </thead>
+        <tbody className="bg-white divide-y divide-gray-200">
+          {patients.map((patient, index) => (
+            <tr
+              key={index}
+              className="hover:bg-gray-50 transition-colors duration-150"
+            >
+              <td className="px-6 py-4 whitespace-nowrap">
+                <div className="flex items-center">
+                  <div className="h-10 w-10 rounded-full bg-teal-100 flex items-center justify-center">
+                    <span className="text-teal-600 font-medium">
+                      {patient.patientName.charAt(0)}
+                    </span>
+                  </div>
+                  <div className="ml-4">
+                    <div className="text-sm font-medium text-gray-900">
+                      {patient.patientName}
+                    </div>
+                  </div>
+                </div>
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                <div className="text-sm text-gray-500">
+                  {patient.patientEmail}
+                </div>
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                <div className="text-sm text-gray-500">
+                  {patient.user.username}
+                </div>
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                <div className="text-sm text-gray-500">
+                  {patient.appointmentCount}
+                </div>
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                <span className="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                  Active
+                </span>
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                <div className="flex items-center justify-end gap-2">
+                  <button
+                    onClick={() => handleViewDetails(patient)}
+                    className="p-1 rounded-lg hover:bg-gray-100 text-teal-600"
+                  >
+                    <Eye className="h-5 w-5" />
+                  </button>
+                  <button className="p-1 rounded-lg hover:bg-gray-100 text-gray-400">
+                    <MoreVertical className="h-5 w-5" />
+                  </button>
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      {patients.length === 0 && !isLoading && (
+        <div className="text-center py-12">
+          <div className="text-gray-400 text-lg">No patients found</div>
+        </div>
+      )}
     </div>
   );
 };

@@ -3,12 +3,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Building2,
   Users,
   Activity,
   Calendar,
-  LogOut,
   Plus,
   Search,
   Edit,
@@ -19,9 +19,21 @@ import {
   Mail,
   Phone,
   Bell,
-  Settings,
-  ChevronRight,
+  Stethoscope,
+  Heart,
+  Eye,
+  Brain,
+  Bone,
+  Microscope,
+  Baby,
+  Pill,
+  Sun,
+  Scissors,
+  FlaskConical,
+  Syringe,
 } from "lucide-react";
+import { GiFrontTeeth } from "react-icons/gi";
+import { FaBacteria } from "react-icons/fa6";
 import {
   Dialog,
   DialogContent,
@@ -29,11 +41,121 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Sidebar from "./Sidebar";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+
+// Specialties configuration with icons and descriptions
+const SPECIALTIES = [
+  {
+    name: "Cardiology",
+    icon: Heart,
+    description: "[❤️] Heart and cardiovascular system",
+  },
+  {
+    name: "Dermatology",
+    icon: Sun,
+    description: "[🌞] Skin conditions and treatments",
+  },
+  {
+    name: "Endocrinology",
+    icon: FlaskConical,
+    description: "[⚗️] Hormone and metabolic disorders",
+  },
+  {
+    name: "Gastroenterology",
+    icon: Pill,
+    description: "[💊] Digestive system disorders",
+  },
+  {
+    name: "General Surgery",
+    icon: Scissors,
+    description: "[✂️] Surgical procedures",
+  },
+  { name: "Gynecology", icon: UserRound, description: "[👩] Women's health" },
+  { name: "Hematology", icon: Microscope, description: "[🔬] Blood disorders" },
+  {
+    name: "Internal Medicine",
+    icon: Stethoscope,
+    description: "[👨‍⚕️] General adult medicine",
+  },
+  { name: "Nephrology", icon: Activity, description: "[🫘] Kidney diseases" },
+  {
+    name: "Neurology",
+    icon: Brain,
+    description: "[🧠] Nervous system disorders",
+  },
+  { name: "Oncology", icon: FaBacteria, description: "[🦠] Cancer treatment" },
+  {
+    name: "Ophthalmology",
+    icon: Eye,
+    description: "[👁️] Eye care and surgery",
+  },
+  {
+    name: "Orthopedics",
+    icon: Bone,
+    description: "[🦴] Musculoskeletal system",
+  },
+  {
+    name: "Otolaryngology",
+    icon: UserRound,
+    description: "[👂] Ear, nose, and throat",
+  },
+  { name: "Pediatrics", icon: Baby, description: "[👶] Children's health" },
+  {
+    name: "Psychiatry",
+    icon: Brain,
+    description: "[🧠] Mental health treatment",
+  },
+  {
+    name: "Pulmonology",
+    icon: Stethoscope,
+    description: "[🫁] Respiratory system",
+  },
+  { name: "Radiology", icon: Syringe, description: "[💉] Medical imaging" },
+  {
+    name: "Rheumatology",
+    icon: Bone,
+    description: "[🦴] Joint and autoimmune diseases",
+  },
+  {
+    name: "Urology",
+    icon: FlaskConical,
+    description: "[🧪] Urinary system disorders",
+  },
+];
+
+const SpecialtyCard = ({ specialty, isSelected, onToggle }) => {
+  const IconComponent = specialty.icon;
+
+  return (
+    <div className="p-3 rounded-lg border transition-all">
+      <div className="flex items-center space-x-3">
+        <div
+          className={`p-2 rounded-full ${
+            isSelected ? "bg-teal-100" : "bg-gray-100"
+          }`}
+        >
+          <IconComponent
+            className={`h-4 w-4 ${
+              isSelected ? "text-teal-600" : "text-gray-600"
+            }`}
+          />
+        </div>
+        <div className="flex-1">
+          <p className="font-medium text-sm">{specialty.name}</p>
+          <p className="text-xs text-gray-500">{specialty.description}</p>
+        </div>
+        <Checkbox
+          checked={isSelected}
+          onCheckedChange={() => onToggle(specialty.name)}
+        />
+      </div>
+    </div>
+  );
+};
 
 const AdminDashboard_New = () => {
   const [activeNav, setActiveNav] = useState("Hospitals");
@@ -45,7 +167,8 @@ const AdminDashboard_New = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [error, setError] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
-
+  const [dashboardanalytics, setdashboardanalytics] = useState({});
+  const [selectedSpecialties, setSelectedSpecialties] = useState([]);
   const [newOrg, setNewOrg] = useState({
     name: "",
     address: "",
@@ -55,8 +178,9 @@ const AdminDashboard_New = () => {
     services: "",
     email: "",
     location: "",
+    specialties: [],
   });
-  console.log(currentUser);
+
   useEffect(() => {
     if (!currentUser?.data?.role || currentUser?.data?.role !== "ADMIN") {
       navigate("/");
@@ -65,14 +189,24 @@ const AdminDashboard_New = () => {
 
   useEffect(() => {
     fetchOrganizations();
+    dashboardananalytics();
   }, []);
+
+  const handleSpecialtyChange = (specialtyName) => {
+    const updatedSpecialties = selectedSpecialties.includes(specialtyName)
+      ? selectedSpecialties.filter((s) => s !== specialtyName)
+      : [...selectedSpecialties, specialtyName];
+
+    setSelectedSpecialties(updatedSpecialties);
+  };
 
   const fetchOrganizations = async () => {
     try {
       setLoading(true);
-      const response = await axios.get("https://curenest.onrender.com/admin/org", {
+      const response = await axios.get("http://localhost:5000/admin/org", {
         withCredentials: true,
       });
+      console.log(response)
       setOrganizations(response.data.data);
       setError(null);
     } catch (err) {
@@ -83,32 +217,78 @@ const AdminDashboard_New = () => {
     }
   };
 
-  const handleAddOrganization = async (e) => {
-    e.preventDefault();
+  const dashboardananalytics = async () => {
     try {
-      setAddingOrg(true);
-      const response = await axios.post(
-        "http://localhost:5000/admin/add",
-        newOrg,
+      const response = await axios.get(
+        "http://localhost:5000/admin/analytics/dashboard",
         {
           withCredentials: true,
         }
       );
-      setOrganizations([...organizations, response.data.organization]);
-      setNewOrg({
-        name: "",
-        address: "",
-        latitude: "",
-        longitude: "",
-        contact: "",
-        services: "",
-        email: "",
-        location: "",
-      });
-      setDialogOpen(false); // Close the dialog
+      setdashboardanalytics(response.data);
+    } catch (err) {
+      setError("Failed to fetch analytics");
+      console.error("Error fetching analytics:", err);
+    }
+  };
+
+  const handleAddOrganization = async (e) => {
+    e.preventDefault();
+    try {
+      setAddingOrg(true);
+
+      // Create the organization data object
+      const orgData = {
+        name: newOrg.name,
+        address: newOrg.address,
+        latitude: newOrg.latitude,
+        longitude: newOrg.longitude,
+        contact: newOrg.contact,
+        services: newOrg.services,
+        email: newOrg.email,
+        location: newOrg.location,
+        specialities: selectedSpecialties,
+      };
+
+      console.log("Sending organization data:", orgData);
+
+      const response = await axios.post(
+        "http://localhost:5000/admin/add",
+        orgData,
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.data.organization) {
+        setOrganizations([...organizations, response.data.organization]);
+
+        // Reset form
+        setNewOrg({
+          name: "",
+          address: "",
+          latitude: "",
+          longitude: "",
+          contact: "",
+          services: "",
+          email: "",
+          location: "",
+        });
+        setSelectedSpecialties([]); // Reset selected specialties
+        setDialogOpen(false);
+
+        // Optional: Show success message
+        setError(null);
+      }
     } catch (error) {
-      console.error("Error adding organization:", error);
-      setError("Failed to add organization");
+      console.error(
+        "Error adding organization:",
+        error.response?.data || error
+      );
+      setError(error.response?.data?.message || "Failed to add organization");
     } finally {
       setAddingOrg(false);
     }
@@ -132,14 +312,24 @@ const AdminDashboard_New = () => {
       org.location.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const SpecialtyTag = ({ specialty }) => {
+    const specialtyInfo = SPECIALTIES.find((s) => s.name === specialty);
+    const IconComponent = specialtyInfo?.icon || Stethoscope;
+
+    return (
+      <span className="inline-flex items-center px-2 py-1 bg-teal-50 text-teal-700 rounded-full text-xs gap-1">
+        <IconComponent className="h-3 w-3" />
+        {specialty} {specialtyInfo?.description.split("]")[0]}]
+      </span>
+    );
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Sidebar */}
       <Sidebar activeNav={activeNav} setActiveNav={setActiveNav} />
 
-      {/* Main Content */}
       <div className="p-8">
-        {/* Header */}
+        {/* Header section */}
         <div className="flex justify-between items-center ml-64 mb-8">
           <div>
             <h1 className="text-2xl font-bold text-gray-800">
@@ -167,32 +357,28 @@ const AdminDashboard_New = () => {
           {[
             {
               title: "Hospitals",
-              value: "2",
+              value: dashboardanalytics.healthOrgs,
               icon: Building2,
               trend: "+12%",
               color: "teal",
             },
             {
               title: "Doctors",
-              value: organizations
-                .reduce((total, org) => total + org.doctors, 0)
-                .toString(),
+              value: dashboardanalytics.doctors,
               icon: Users,
               trend: "+5%",
               color: "blue",
             },
             {
               title: "Patients",
-              value: organizations
-                .reduce((total, org) => total + org.patients, 0)
-                .toString(),
+              value: dashboardanalytics.users,
               icon: Activity,
               trend: "+18%",
               color: "indigo",
             },
             {
               title: "Appointments",
-              value: "120",
+              value: dashboardanalytics.totalAppointments,
               icon: Calendar,
               trend: "+8%",
               color: "purple",
@@ -228,6 +414,7 @@ const AdminDashboard_New = () => {
         </div>
 
         <div className="ml-64 p-8">
+          {/* Organizations header and add button */}
           <div className="flex justify-between items-center mb-6">
             <div>
               <h1 className="text-3xl font-bold text-gray-800">
@@ -251,6 +438,7 @@ const AdminDashboard_New = () => {
                 </DialogHeader>
                 <form onSubmit={handleAddOrganization} className="mt-4">
                   <div className="grid grid-cols-2 gap-4">
+                    {/* Left column */}
                     <div className="space-y-4">
                       <div>
                         <Label htmlFor="name">Organization Name</Label>
@@ -326,6 +514,7 @@ const AdminDashboard_New = () => {
                       </div>
                     </div>
 
+                    {/* Right column */}
                     <div className="space-y-4">
                       <div>
                         <Label htmlFor="contact">Contact</Label>
@@ -366,6 +555,26 @@ const AdminDashboard_New = () => {
                           required
                         />
                       </div>
+                    </div>
+                  </div>
+
+                  {/* Specialties section */}
+                  <div className="mt-6">
+                    <Label className="text-lg font-semibold">Specialties</Label>
+                    <p className="text-sm text-gray-500 mb-4">
+                      Select the medical specialties offered at this facility
+                    </p>
+                    <div className="grid grid-cols-2 gap-3 max-h-[400px] overflow-y-auto p-4 border rounded-lg">
+                      {SPECIALTIES.map((specialty) => (
+                        <SpecialtyCard
+                          key={specialty.name}
+                          specialty={specialty}
+                          isSelected={selectedSpecialties.includes(
+                            specialty.name
+                          )}
+                          onToggle={handleSpecialtyChange}
+                        />
+                      ))}
                     </div>
                   </div>
 
@@ -445,13 +654,10 @@ const AdminDashboard_New = () => {
                         <span>{org.address}</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Building2 className="h-4 w-4 text-teal-600" />
-                        <span>{org.location}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
                         <UserRound className="h-4 w-4 text-teal-600" />
                         <span>
-                          {org._count.doctors} Doctors • {org.patients} Patients
+                          {org?._count?.doctors || 0} Doctors •{" "}
+                          {org?.numberOfPatients || 0} Patients
                         </span>
                       </div>
                       <div className="flex items-center gap-2">
@@ -463,8 +669,28 @@ const AdminDashboard_New = () => {
                         <span>{org.contact}</span>
                       </div>
                       <div className="mt-2 pt-2 border-t border-gray-100">
+                        <div className="flex items-center gap-2 mb-2">
+                          <Stethoscope className="h-4 w-4 text-teal-600" />
+                          <span className="font-medium text-gray-700">
+                            Specialties:
+                          </span>
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                          {(org.specialities || []).map((specialty) => (
+                            <SpecialtyTag
+                              key={specialty}
+                              specialty={specialty}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                      <div className="mt-2 pt-2 border-t border-gray-100">
                         <p className="font-medium text-gray-700">Services:</p>
-                        <p className="mt-1">{org.services}</p>
+                        <p className="mt-1">
+                          {Array.isArray(org.services)
+                            ? org.services.join(", ")
+                            : org.services}
+                        </p>
                       </div>
                     </div>
                   </CardContent>

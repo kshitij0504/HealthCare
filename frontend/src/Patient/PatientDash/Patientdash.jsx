@@ -42,6 +42,7 @@ const PatientDashboard = () => {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -97,86 +98,103 @@ const PatientDashboard = () => {
     );
   }
 
-  return (
-    <div className="flex flex-col lg:flex-row h-screen bg-gray-50">
-      <Sidebar className="hidden lg:block w-64" />
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
 
-      <div className="flex-1 flex flex-col">
+  return (
+    <div className="flex h-screen bg-gray-50">
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-20 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+
+      <div className="flex-1 flex flex-col min-h-screen lg:ml-64">
         <header
-          className={`sticky top-0 z-30 transition-all duration-300 ${
+          className={`sticky top-0 z-10 transition-all duration-300 ${
             isScrolled ? "bg-white/80 backdrop-blur-lg shadow-md" : "bg-white"
           }`}
         >
-          <div className="w-full px-4 lg:px-6">
-            <div className="flex items-center justify-between py-4">
+          <div className="px-4 py-4">
+            <div className="flex items-center justify-between">
               <Button
                 variant="ghost"
                 size="icon"
-                className="lg:hidden"
-                onClick={() => {/* Handle Sidebar Toggle */}}
+                className="lg:hidden h-10 w-10"
+                onClick={toggleSidebar}
               >
-                <Menu className="h-5 w-5 text-gray-600" />
+                <Menu className="h-6 w-6" />
               </Button>
-              <div className="flex items-center gap-4 lg:gap-6">
-                <div className="relative">
+
+              <div className="flex items-center gap-4 flex-1 justify-end lg:justify-between">
+                <div className="hidden lg:block relative max-w-md">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                   <Input
                     placeholder="Search..."
-                    className="pl-10 w-full max-w-xs bg-gray-50 border-0 focus:ring-2 focus:ring-teal-500"
+                    className="pl-10 w-full max-w-xs bg-gray-50 border-0"
                   />
                 </div>
-              </div>
-              <div className="flex items-center gap-4">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="relative hover:bg-teal-50 rounded-xl"
-                >
-                  <Bell className="w-5 h-5 text-teal-600" />
-                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-teal-500 rounded-full text-xs text-white flex items-center justify-center">
-                    {
-                      appointments.filter((apt) => apt.status === "BOOKED")
-                        .length
-                    }
-                  </span>
-                </Button>
 
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <div className="flex items-center gap-3 cursor-pointer hover:bg-gray-50 p-2 rounded-xl transition-all">
-                      <Avatar className="h-10 w-10 ring-2 ring-teal-500/30">
-                        <AvatarImage src={user?.avatar} alt={user?.username} />
-                        <AvatarFallback className="bg-teal-50 text-teal-700">
-                          {user?.username?.charAt(0).toUpperCase()}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="hidden lg:block">
-                        <span className="font-medium text-gray-900">
-                          {user?.username}
-                        </span>
-                        <span className="text-sm text-teal-600">Patient</span>
+                <div className="flex items-center gap-4">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="relative hover:bg-teal-50 rounded-xl"
+                  >
+                    <Bell className="w-5 h-5 text-teal-600" />
+                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-teal-500 rounded-full text-xs text-white flex items-center justify-center">
+                      {
+                        appointments.filter((apt) => apt.status === "BOOKED")
+                          .length
+                      }
+                    </span>
+                  </Button>
+
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <div className="flex items-center gap-3 cursor-pointer hover:bg-gray-50 p-2 rounded-xl transition-all">
+                        <Avatar className="h-10 w-10 ring-2 ring-teal-500/30">
+                          <AvatarImage
+                            src={user?.avatar}
+                            alt={user?.username}
+                          />
+                          <AvatarFallback className="bg-teal-50 text-teal-700">
+                            {user?.username?.charAt(0).toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="hidden lg:block">
+                          <span className="font-medium text-gray-900">
+                            {user?.username}
+                          </span>
+                          <p className="text-sm text-teal-600">Patient</p>
+                        </div>
+                        <ChevronDown className="w-4 h-4 text-teal-500 ml-2" />
                       </div>
-                      <ChevronDown className="w-4 h-4 text-teal-500 ml-2" />
-                    </div>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-56 p-2">
-                    <DropdownMenuItem className="p-2 rounded-lg cursor-pointer hover:bg-teal-50">
-                      Profile Settings
-                    </DropdownMenuItem>
-                    <DropdownMenuItem className="p-2 rounded-lg cursor-pointer hover:bg-teal-50">
-                      Help Center
-                    </DropdownMenuItem>
-                    <DropdownMenuItem className="p-2 rounded-lg cursor-pointer hover:bg-red-50 text-red-600">
-                      Sign Out
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-56 p-2">
+                      <DropdownMenuItem className="p-2 rounded-lg cursor-pointer hover:bg-teal-50">
+                        Profile Settings
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className="p-2 rounded-lg cursor-pointer hover:bg-teal-50">
+                        Help Center
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className="p-2 rounded-lg cursor-pointer hover:bg-red-50 text-red-600">
+                        Sign Out
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
               </div>
             </div>
           </div>
         </header>
+
         <main className="flex-1 overflow-auto px-4 lg:px-6 py-8">
-          <div className="max-w-7xl mx-auto space-y-6">
+          <div className="max-w-7xl mx-auto ml-1 space-y-6">
             <h1 className="text-2xl lg:text-3xl font-bold text-gray-900">
               Welcome back, {user?.username}! 👋
             </h1>
@@ -186,7 +204,7 @@ const PatientDashboard = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8 ">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8 mt-6">
             <Card className="lg:col-span-2 border-0 shadow-lg hover:shadow-xl transition-all bg-gradient-to-br from-teal-500 to-teal-600 text-white">
               <CardContent className="p-6">
                 <div className="flex items-center gap-6">

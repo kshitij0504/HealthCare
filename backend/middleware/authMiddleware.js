@@ -16,32 +16,55 @@ const authMiddleware = (req, res, next) => {
   }
 };
 
+// const authenticateHealthOrg = (req, res, next) => {
+//   const token = req.cookies.healthOrgToken;
+
+//   if (!token) {
+//     return res.status(401).json({ error: 'Unauthorized: No token provided' });
+//   }
+
+//   jwt.verify(token, 'your-secret-key', (err, decoded) => {
+//     if (err) {
+//       return res.status(403).json({ error: 'Forbidden: Invalid token' });
+//     }
+//     req.healthOrg = decoded; 
+//     next();
+//   });
+// };
+
+
 const authenticateHealthOrg = (req, res, next) => {
-  const token = req.cookies.healthOrgToken;
-
-  if (!token) {
-    return res.status(401).json({ error: 'Unauthorized: No token provided' });
-  }
-
-  jwt.verify(token, 'your-secret-key', (err, decoded) => {
-    if (err) {
-      return res.status(403).json({ error: 'Forbidden: Invalid token' });
-    }
-    req.healthOrg = decoded; 
-    next();
-  });
-};
-
-const doctorAuthMiddleware = (req, res, next) => {
-  const token = req.cookies.doctorToken // Token should be sent in the headers
-
+  const token = req.cookies.healthOrgToken; 
   if (!token) {
     return res.status(401).json({ error: 'Access token is missing' });
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || "your-secret-key"); // Replace with your JWT secret
-    const doctorId = decoded.id; // Assuming the token payload contains the doctor ID as id
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || "your-secret-key");
+    console.log(decoded)
+    const healthOrgId = decoded.id;
+
+    if (!healthOrgId) {
+      return res.status(400).json({ error: 'Invalid token payload' });
+    }
+
+    req.healthOrgId = healthOrgId; 
+    next();
+  } catch (error) {
+    console.error('Error decoding token:', error);
+    res.status(401).json({ error: 'Invalid or expired token' });
+  } 
+}
+
+const doctorAuthMiddleware = (req, res, next) => {
+  const token = req.cookies.doctorToken 
+  if (!token) {
+    return res.status(401).json({ error: 'Access token is missing' });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || "your-secret-key");
+    const doctorId = decoded.id;
 
     if (!doctorId) {
       return res.status(400).json({ error: 'Invalid token payload' });

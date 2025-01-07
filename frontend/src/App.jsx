@@ -23,7 +23,6 @@ import Patientappoinments from "./Patient/PatientAppoinment/Patientappoinments.j
 import HospitalCard from "./Patient/HospitalCard/Hospitalcard.jsx";
 import Hospitaldash from "./Hospital/Hospitaldash.jsx";
 import HospitalDoctorList from "./Hospital/HospitalDoctorList.jsx/HospitalDoctorlist.jsx";
-import HospitalPatientList from "./Hospital/HospitalPatientAppoinment/HospitalPatientappoinment.jsx";
 import HospitalPatientappoinments from "./Hospital/HospitalPatientAppoinment/HospitalPatientappoinment.jsx";
 import AdminDashboard_New from "./Admin_new/AdminDash.jsx";
 import AdminHospital from "./Admin_new/Hospital.jsx";
@@ -32,7 +31,10 @@ import HospitalDetailModel from "./Patient/HospitalCard/HospitalDetailModel.jsx"
 import DoctorDashboard from "./Doctor/DoctorDash.jsx";
 import DoctorPatientRecords from "./Doctor/DoctorPatientRecorsd/Doctorpatientrecords.jsx";
 import AddDoctor from "./Hospital/HospitalDoctorList.jsx/AddDoctor.jsx";
-import HospitalDetailModel from "./Patient/HospitalCard/HospitalDetailModel.jsx";
+import DoctorApointmentList from "./Doctor/DoctorAppoinments/Doctorappoinments.jsx";
+import DoctorPatientList from "./Doctor/DoctorPatientList.jsx";
+import HospitalPatientLists from "./Hospital/HospitalPatientList/HospitalPatientlist.jsx";
+import DoctorSchedule from "./Doctor/DoctorSchedule.jsx";
 function App() {
   return (
     <>
@@ -55,7 +57,7 @@ function App() {
         <Route path="/hospital-card" element={<HospitalCard />} />
         <Route path="/hospitaldash" element={<Hospitaldash />} />
         <Route path="/hospital-doctorlist" element={<HospitalDoctorList />} />
-        <Route path="/hospital-patientlist" element={<HospitalPatientList />} />
+        <Route path="/hospital-patientlist" element={<HospitalPatientLists />} />
         <Route path="/adddoctor" element={<AddDoctor />} />
 
         <Route path="/doctordash" element={<DoctorDashboard />} />
@@ -63,6 +65,10 @@ function App() {
           path="/doctor-patient-records"
           element={<DoctorPatientRecords />}
         />
+        <Route path="/doctor-schedule" element={<DoctorSchedule/>}/>
+        <Route path="/doctorapoinment" element={<DoctorApointmentList/>}/>
+        <Route path="/doctor-patientlist" element={<DoctorPatientList/>}/>
+
         <Route path="/adminlogin" element={<SuperAdminLogin />} />
         <Route path="/admindash" element={<Admindash />} />
         <Route path="/admin-hosp" element={<AdminHospital />} />

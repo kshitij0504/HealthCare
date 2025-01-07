@@ -10,13 +10,12 @@ const hashPassword = async (password) => {
 
 const addHealthCareOrganisation = async (req, res) => {
   try {
-    const { name, address, latitude, longitude, contact, services, email } =
+    const { name, address, latitude, longitude, contact, services, email, specialities } =
       req.body;
-
+      console.log(specialities)
     const accessId = `CN_ORG_${uuidv4().split("-")[0].toUpperCase()}`;
     const password = accessId;
     const hashedPassword = await hashPassword(password);
-    console.log(services);
     let servicesArray = [];
     if (typeof services === "string") {
       servicesArray = services.split(",").map((service) => service.trim());
@@ -41,6 +40,7 @@ const addHealthCareOrganisation = async (req, res) => {
         accessId: accessId,
         password: hashedPassword,
         status: "Pending",
+        specialities
       },
     });
 
@@ -78,18 +78,28 @@ const getAllHealthCareOrganizations = async (req, res) => {
         services: true,
         email: true,
         status: true,
+        specialities: true,
         _count: {
           select: {
-            doctors: true, 
+            doctors: true,
+          },
+        },
+        appointments: {
+          select: {
+            userId: true, // Include user IDs to calculate unique patients
           },
         },
       },
     });
-    const transformedOrganizations = organizations.map(org => ({
-      ...org,
-      numberOfDoctors: org._count.doctors,
-      numberOfPatients: org._count.appointments, // Assuming 1 appointment = 1 unique patient
-    }));
+
+    const transformedOrganizations = organizations.map(org => {
+      const uniquePatientIds = new Set(org.appointments.map(appt => appt.userId));
+      return {
+        ...org,
+        numberOfDoctors: org._count.doctors,
+        numberOfPatients: uniquePatientIds.size, 
+      };
+    });
 
     res.status(200).json({
       status: "success",
@@ -104,12 +114,49 @@ const getAllHealthCareOrganizations = async (req, res) => {
     });
   }
 };
+
+const getDashboardAnalytics = async (req, res) => {
+  try {
+    const [healthOrgsCount, doctorsCount, usersCount, appointmentStats, totalAppointments] = await Promise.all([
+      prisma.organization.count(),
+      prisma.doctor.count(),
+      prisma.user.count({ where: { role: 'USER' } }),
+      prisma.appointment.groupBy({
+        by: ['status'],
+        _count: { id: true },
+      }),
+      prisma.appointment.count(), // Count all appointments
+    ]);
+
+    const response = {
+      healthOrgs: healthOrgsCount,
+      doctors: doctorsCount,
+      users: usersCount,
+      appointments: appointmentStats.map(stat => ({
+        status: stat.status,
+        count: stat._count.id,
+      })),
+      totalAppointments, // Include total appointment count
+    };
+
+    res.json(response);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error fetching analytics data' });
+  }
+};
+
+
 const getUsers = async (req, res) => {
   try {
     const users = await prisma.user.findMany({
       select: {
         id: true,
         username: true,
+        gender:true,
+        contact:true,
+        age:true,
+        address:true,
         role: true,
         email: true,
         avatar: true,
@@ -160,4 +207,5 @@ module.exports = {
   getAllHealthCareOrganizations,
   getUsers,
   getDoctors,
+  getDashboardAnalytics
 };

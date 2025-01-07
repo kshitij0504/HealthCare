@@ -8,7 +8,6 @@ const DashboardLayout = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
-
       <MainContent sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
     </div>
   );

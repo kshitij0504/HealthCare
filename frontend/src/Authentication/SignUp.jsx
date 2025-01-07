@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import axios from "axios";
 import OAuth from "./OAuth";
 import { useNavigate } from "react-router-dom";
@@ -16,29 +17,84 @@ const SignUp = () => {
     username: "",
     email: "",
     password: "",
-    phone: "",
+    contact: "",
+    age: "",
+    gender: "",
     address: "",
     city: "",
     state: "",
     zipCode: "",
     otp: ""
   });
-  const [error, setError] = useState("");
+  const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+
+  const validateForm = () => {
+    const newErrors = {};
+    
+    // Username validation
+    if (formData.username.length < 3) {
+      newErrors.username = "Username must be at least 3 characters long";
+    }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      newErrors.email = "Please enter a valid email address";
+    }
+
+    // Password validation
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+    if (!passwordRegex.test(formData.password)) {
+      newErrors.password = "Password must be at least 8 characters long and contain both letters and numbers";
+    }
+
+    // Contact validation
+    const phoneRegex = /^\d{10}$/;
+    if (!phoneRegex.test(formData.contact)) {
+      newErrors.contact = "Please enter a valid 10-digit phone number";
+    }
+
+    // Age validation
+    const age = parseInt(formData.age);
+    if (isNaN(age) || age < 1 || age > 120) {
+      newErrors.age = "Please enter a valid age between 1 and 120";
+    }
+
+    // Gender validation
+    if (!formData.gender) {
+      newErrors.gender = "Please select a gender";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    // Clear error when user starts typing
+    if (errors[e.target.name]) {
+      setErrors({ ...errors, [e.target.name]: "" });
+    }
+  };
+
+  const handleGenderChange = (value) => {
+    setFormData({ ...formData, gender: value });
+    if (errors.gender) {
+      setErrors({ ...errors, gender: "" });
+    }
   };
 
   const handleSignUp = async (e) => {
     e.preventDefault();
+    if (!validateForm()) return;
+    
     setLoading(true);
-    setError("");
     try {
       await axios.post("http://localhost:5000/auth/register", formData);
       setStep(2);
     } catch (error) {
-      setError(error.response?.data?.message || "Registration failed");
+      setErrors({ submit: error.response?.data?.message || "Registration failed" });
     } finally {
       setLoading(false);
     }
@@ -47,7 +103,6 @@ const SignUp = () => {
   const handleVerifyOtp = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError("");
     try {
       const response = await axios.post("http://localhost:5000/auth/verify-otp", {
         email: formData.email,
@@ -58,10 +113,10 @@ const SignUp = () => {
       if (userId) {
         navigate("/patientform", { state: { userId } });
       } else {
-        setError("User ID not received from server.");
+        setErrors({ submit: "User ID not received from server." });
       }
     } catch (error) {
-      setError(error.response?.data?.message || "OTP verification failed");
+      setErrors({ submit: error.response?.data?.message || "OTP verification failed" });
     } finally {
       setLoading(false);
     }
@@ -71,7 +126,7 @@ const SignUp = () => {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-teal-50 p-4 font-inter">
       <Card className="w-full max-w-md shadow-xl">
         <CardHeader>
-        <img
+          <img
             src="../../assets/CureNest_logo.svg"
             alt="CureNest Logo"
             className="mx-auto h-15 w-25"
@@ -80,10 +135,10 @@ const SignUp = () => {
           <p className="text-center text-gray-600 mt-2">Begin your healthcare journey</p>
         </CardHeader>
         <CardContent className="space-y-6">
-          {error && (
+          {errors.submit && (
             <Alert variant="destructive">
               <AlertCircle className="h-4 w-4" />
-              <AlertDescription>{error}</AlertDescription>
+              <AlertDescription>{errors.submit}</AlertDescription>
             </Alert>
           )}
 
@@ -98,8 +153,9 @@ const SignUp = () => {
                   value={formData.username}
                   onChange={handleChange}
                   placeholder="Enter your username"
-                  className="mt-1"
+                  className={`mt-1 ${errors.username ? 'border-red-500' : ''}`}
                 />
+                {errors.username && <p className="text-red-500 text-sm mt-1">{errors.username}</p>}
               </div>
 
               <div>
@@ -111,8 +167,9 @@ const SignUp = () => {
                   value={formData.email}
                   onChange={handleChange}
                   placeholder="your@email.com"
-                  className="mt-1"
+                  className={`mt-1 ${errors.email ? 'border-red-500' : ''}`}
                 />
+                {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
               </div>
 
               <div>
@@ -124,21 +181,55 @@ const SignUp = () => {
                   value={formData.password}
                   onChange={handleChange}
                   placeholder="••••••••"
-                  className="mt-1"
+                  className={`mt-1 ${errors.password ? 'border-red-500' : ''}`}
                 />
+                {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
               </div>
 
               <div>
                 <Label>Phone Number</Label>
                 <Input
                   type="tel"
-                  name="phone"
+                  name="contact"
                   required
-                  value={formData.phone}
+                  value={formData.contact}
                   onChange={handleChange}
                   placeholder="Enter your phone number"
-                  className="mt-1"
+                  className={`mt-1 ${errors.contact ? 'border-red-500' : ''}`}
                 />
+                {errors.contact && <p className="text-red-500 text-sm mt-1">{errors.contact}</p>}
+              </div>
+
+              <div>
+                <Label>Gender</Label>
+                <Select name="gender" value={formData.gender} onValueChange={handleGenderChange}>
+                  <SelectTrigger className={`mt-1 ${errors.gender ? 'border-red-500' : ''}`}>
+                    <SelectValue placeholder="Select your gender" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="male">Male</SelectItem>
+                    <SelectItem value="female">Female</SelectItem>
+                    <SelectItem value="other">Other</SelectItem>
+                    <SelectItem value="prefer-not-to-say">Prefer not to say</SelectItem>
+                  </SelectContent>
+                </Select>
+                {errors.gender && <p className="text-red-500 text-sm mt-1">{errors.gender}</p>}
+              </div>
+
+              <div>
+                <Label>Age</Label>
+                <Input
+                  type="number"
+                  name="age"
+                  required
+                  value={formData.age}
+                  onChange={handleChange}
+                  placeholder="Enter your age"
+                  min="1"
+                  max="120"
+                  className={`mt-1 ${errors.age ? 'border-red-500' : ''}`}
+                />
+                {errors.age && <p className="text-red-500 text-sm mt-1">{errors.age}</p>}
               </div>
 
               <div>
@@ -190,8 +281,9 @@ const SignUp = () => {
                   value={formData.zipCode}
                   onChange={handleChange}
                   placeholder="ZIP Code"
-                  className="mt-1"
+                  className={`mt-1 ${errors.zipCode ? 'border-red-500' : ''}`}
                 />
+                {errors.zipCode && <p className="text-red-500 text-sm mt-1">{errors.zipCode}</p>}
               </div>
 
               <Button 

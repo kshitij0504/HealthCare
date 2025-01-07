@@ -77,16 +77,16 @@ const MedicalDashboard = () => {
         backgroundColor: "#f97316",
         borderRadius: 10,
         hoverBackgroundColor: "#fb923c",
-      }
+      },
     ],
   };
 
   const barChartOptions = {
     responsive: true,
     plugins: {
-      legend: { 
+      legend: {
         display: true,
-        position: 'top',
+        position: "top",
       },
       tooltip: {
         callbacks: {
@@ -97,14 +97,14 @@ const MedicalDashboard = () => {
       },
     },
     scales: {
-      x: { 
+      x: {
         grid: { display: false },
-        ticks: { color: '#64748b' }
+        ticks: { color: "#64748b" },
       },
       y: {
         grid: { color: "#f0f0f0" },
         beginAtZero: true,
-        ticks: { color: '#64748b' }
+        ticks: { color: "#64748b" },
       },
     },
     animation: {
@@ -123,15 +123,15 @@ const MedicalDashboard = () => {
           "#8b5cf6",
           "#f97316",
           "#ec4899",
-          "#f59e0b"
+          "#f59e0b",
         ],
         hoverBackgroundColor: [
           "#2dd4bf",
           "#a78bfa",
           "#fb923c",
           "#f472b6",
-          "#fbbf24"
-        ]
+          "#fbbf24",
+        ],
       },
     ],
   };
@@ -157,7 +157,7 @@ const MedicalDashboard = () => {
         }`}
       >
         <nav className="bg-white shadow-sm border-b px-6 py-4 mt-4 flex items-center justify-between">
-          <div className="flex items-center">
+          <div className="flex items-center h-15">
             {isMobile && (
               <button
                 onClick={toggleSidebar}
@@ -166,7 +166,7 @@ const MedicalDashboard = () => {
                 <Menu className="w-6 h-6" />
               </button>
             )}
-            <h1 className="text-xl font-semibold text-gray-800">Dashboard</h1>
+            <h1 className="text-2xl font-semibold text-gray-800">Dashboard</h1>
           </div>
 
           <div className="flex items-center space-x-4">
@@ -180,7 +180,10 @@ const MedicalDashboard = () => {
         <div className="p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
             {stats.map((stat, index) => (
-              <div key={index} className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300">
+              <div
+                key={index}
+                className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300"
+              >
                 <div className="flex justify-between items-center mb-4">
                   <div className="p-3 bg-teal-50 rounded-lg">
                     <span className="w-6 h-6 text-teal-600">{stat.icon}</span>
@@ -189,7 +192,9 @@ const MedicalDashboard = () => {
                     {stat.trend}
                   </span>
                 </div>
-                <h3 className="text-gray-500 text-sm font-medium mb-1">{stat.title}</h3>
+                <h3 className="text-gray-500 text-sm font-medium mb-1">
+                  {stat.title}
+                </h3>
                 <p className="text-2xl font-bold text-gray-800">{stat.value}</p>
               </div>
             ))}
@@ -197,11 +202,15 @@ const MedicalDashboard = () => {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300">
-              <h3 className="text-lg font-semibold mb-4 text-gray-800">Patient Visits</h3>
+              <h3 className="text-lg font-semibold mb-4 text-gray-800">
+                Patient Visits
+              </h3>
               <Bar data={barChartData} options={barChartOptions} />
             </div>
             <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300">
-              <h3 className="text-lg font-semibold mb-4 text-gray-800">Department Distribution</h3>
+              <h3 className="text-lg font-semibold mb-4 text-gray-800">
+                Department Distribution
+              </h3>
               <div className="flex justify-center">
                 <Pie data={pieChartData} height={200} width={300} />
               </div>

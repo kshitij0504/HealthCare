@@ -9,10 +9,7 @@ const doctorSignin = async (req, res) => {
     const doctor = await prisma.doctor.findUnique({
       where: { accessId },
       include: {
-<<<<<<< HEAD
         // Slot: true, // Include related slots
-=======
->>>>>>> f55c7937c019c5a68e80afa448b5e8aca602baee
         appointments: true, // Include related appointments
         schedules: true, // Include related schedules
         organization: true, // Include related organization details if needed

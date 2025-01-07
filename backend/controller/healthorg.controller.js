@@ -2,7 +2,7 @@ const prisma = require("../config/connectDB");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { v4: uuidv4 } = require("uuid");
-
+const { sendEmail } = require("../config/emailService");
 const healthOrgSignin = async (req, res) => {
   const { id, password } = req.body;
 
@@ -71,8 +71,6 @@ const addDoctor = async (req, res) => {
   try {
     const decoded = jwt.verify(token, "your-secret-key");
     const organizationId = parseInt(decoded.id, 10);
-
-    // Generate unique identifiers
     const doctorId = uuidv4();
     const password = Math.random().toString(36).substring(2, 10);
     const accessId = `CN_DR_${uuidv4().split("-")[0].toUpperCase()}`;
@@ -111,7 +109,11 @@ const addDoctor = async (req, res) => {
     await prisma.schedule.createMany({
       data: defaultSchedules,
     });
-
+    await sendEmail(
+      email,
+      "Welcome to CureNest",
+      `<p>AccessId: <strong>${accessId}</strong></p><p>Password: <strong>${password}</strong></p>`
+    );
     res.status(201).json({
       message: "Doctor added successfully",
       doctor,
@@ -154,9 +156,99 @@ const getDoctors = async (req, res) => {
   }
 };
 
+const getPatient = async (req, res) => {
+  const { healthOrgId } = req;
+  console.log(healthOrgId);
+
+  try {
+      // Check if the hospital exists
+      const hospital = await prisma.organization.findUnique({
+          where: { id: healthOrgId },
+      });
+
+      if (!hospital) {
+          return res.status(404).json({ error: "Hospital not found" });
+      }
+
+      // Fetch all appointments for the hospital
+      const appointments = await prisma.appointment.findMany({
+          where: { organizationId: healthOrgId },
+          select: {
+              userId: true,
+              patientName: true,
+              patientEmail: true,
+              user: {
+                  select: {
+                      username: true,
+                      email: true,
+                      age:true,
+                      gender:true,
+                      address:true,
+                      contact:true,
+                      healthData: true,
+                  },
+              },
+              doctor: {
+                  select: {
+                      firstname: true,
+                      lastname: true,
+                      specialty: true,
+                  },
+              },
+              date: true,
+              status: true,
+          },
+      });
+
+      // Deduplicate patients and collect their appointment count and doctor details
+      const uniquePatients = new Map();
+
+      appointments.forEach((appointment) => {
+          if (!uniquePatients.has(appointment.userId)) {
+              uniquePatients.set(appointment.userId, {
+                  patientName: appointment.patientName,
+                  patientEmail: appointment.patientEmail,
+                  user: appointment.user,
+                  appointments: [
+                      {
+                          date: appointment.date,
+                          status: appointment.status,
+                          doctor: appointment.doctor,
+                      },
+                  ],
+              });
+          } else {
+              // Add appointment details to the existing patient entry
+              uniquePatients.get(appointment.userId).appointments.push({
+                  date: appointment.date,
+                  status: appointment.status,
+                  doctor: appointment.doctor,
+              });
+          }
+      });
+
+      // Prepare response
+      const patientData = Array.from(uniquePatients.values()).map((patient) => ({
+          ...patient,
+          appointmentCount: patient.appointments.length,
+      }));
+
+      const patientCount = patientData.length;
+
+      res.json({
+          hospitalName: hospital.name,
+          patientCount,
+          patients: patientData,
+      });
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "An error occurred while fetching data" });
+  }
+};
 
 module.exports = {
   healthOrgSignin,
   addDoctor,
-  getDoctors
+  getDoctors,
+  getPatient
 };

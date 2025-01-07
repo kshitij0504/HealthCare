@@ -5,7 +5,7 @@ const prisma = require("../config/connectDB");
 const { sendEmail } = require("../config/emailService");
 
 const register = async (req, res) => {
-  const { username, email, password } = req.body;
+  const { username, email, password, gender, age, contact, address } = req.body;
 
   const existingUser = await prisma.user.findUnique({ where: { email } });
   if (existingUser)
@@ -14,7 +14,7 @@ const register = async (req, res) => {
   const hashedPassword = await bcrypt.hash(password, 10);
 
   const newUser = await prisma.user.create({
-    data: { username, email, password: hashedPassword },
+    data: { username, email, password: hashedPassword, gender, age: parseInt(age), contact, address },
   });
 
   const otp = otpGenerator.generate(6, { digits: true });
@@ -28,7 +28,6 @@ const register = async (req, res) => {
 
   res.status(201).json({ message: "User registered, OTP sent" });
 };
-
 const verifyOtp = async (req, res) => {
   const { email, otp } = req.body;
   console.log({ email, otp });
@@ -69,12 +68,12 @@ const login = async (req, res) => {
 
     res.cookie("token", token, {
       httpOnly: true,
-       secure: process.env.NODE_ENV === "production", 
+      secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
       maxAge: 3600000, // 1 hour
     });
 
-    res.status(200).json({ message: "Login successful", data: user });
+    res.status(200).json({ message: "Login successful", data: user, token: token });
   } catch (error) {
     console.error("Error during login:", error);
     res.status(500).json({ message: "Internal server error" });
@@ -181,7 +180,9 @@ const getAvailableSlots = async (req, res) => {
 
   try {
     if (isNaN(doctorIdInt) || isNaN(organizationIdInt)) {
-      return res.status(400).json({ error: "Invalid doctorId or organizationId." });
+      return res
+        .status(400)
+        .json({ error: "Invalid doctorId or organizationId." });
     }
     const slots = await prisma.slot.findMany({
       where: {
@@ -193,7 +194,9 @@ const getAvailableSlots = async (req, res) => {
     const availableSlots = slots
       .map((slot) => {
         if (Array.isArray(slot.slotDetails)) {
-          const filteredDetails = slot.slotDetails.filter((detail) => !detail.isBooked);
+          const filteredDetails = slot.slotDetails.filter(
+            (detail) => !detail.isBooked
+          );
           if (filteredDetails.length > 0) {
             return { ...slot, slotDetails: filteredDetails };
           }
@@ -228,7 +231,11 @@ const bookAppointment = async (req, res) => {
     });
 
     if (!slotData) {
-      return res.status(404).json({ error: "No slots found for the given doctor and organization." });
+      return res
+        .status(404)
+        .json({
+          error: "No slots found for the given doctor and organization.",
+        });
     }
 
     // Parse slotDetails and check if the timeSlot is available
@@ -238,7 +245,9 @@ const bookAppointment = async (req, res) => {
     );
 
     if (slotIndex === -1) {
-      return res.status(400).json({ error: "This slot is already booked or does not exist." });
+      return res
+        .status(400)
+        .json({ error: "This slot is already booked or does not exist." });
     }
 
     // Mark the slot as booked
@@ -257,12 +266,12 @@ const bookAppointment = async (req, res) => {
         status: "Pending",
         user: {
           connect: {
-            id: userIdint,  // Connect the user by their ID
+            id: userIdint, // Connect the user by their ID
           },
         },
         doctor: {
           connect: {
-            id: doctorIdInt,  // Connect the doctor by their ID (no need for doctorId)
+            id: doctorIdInt, // Connect the doctor by their ID (no need for doctorId)
           },
         },
         organization: {
@@ -272,15 +281,21 @@ const bookAppointment = async (req, res) => {
         },
       },
     });
-    
 
     res.status(201).json(appointment);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "An error occurred while booking the appointment." });
+    res
+      .status(500)
+      .json({ error: "An error occurred while booking the appointment." });
   }
 };
 
-
-
-module.exports = { register, verifyOtp, login, GoogleAuth, getAvailableSlots,bookAppointment };
+module.exports = {
+  register,
+  verifyOtp,
+  login,
+  GoogleAuth,
+  getAvailableSlots,
+  bookAppointment,
+};

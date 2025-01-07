@@ -1,21 +1,41 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import Sidebar from './Sidebar';
-import { Edit, Trash2, Eye } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import Sidebar from "./Sidebar";
+import { Eye, Plus } from "lucide-react";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 const Hospital = () => {
   const [hospitals, setHospitals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedHospital, setSelectedHospital] = useState(null);
+  const [newOrg, setNewOrg] = useState({
+    name: "",
+    address: "",
+    latitude: "",
+    longitude: "",
+    contact: "",
+    services: "",
+    email: "",
+    location: "",
+  });
 
   useEffect(() => {
-    // Fetch hospital data from backend
     const fetchHospitals = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/admin/org",{
+        const response = await axios.get("http://localhost:5000/admin/org", {
           withCredentials: true,
         });
-        console.log(response.data)
         setHospitals(response.data.data);
       } catch (error) {
         setError("Failed to fetch hospital data");
@@ -28,20 +48,179 @@ const Hospital = () => {
     fetchHospitals();
   }, []);
 
+  const handleAddOrganization = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/admin/add",
+        newOrg,
+        {
+          withCredentials: true,
+        }
+      );
+      setHospitals([...hospitals, response.data.organization]);
+      setNewOrg({
+        name: "",
+        address: "",
+        latitude: "",
+        longitude: "",
+        contact: "",
+        services: "",
+        email: "",
+        location: "",
+      });
+      setDialogOpen(false);
+    } catch (error) {
+      setError("Failed to add organization");
+      console.error(error);
+    }
+  };
+
+  const handleViewDetails = (hospital) => {
+    setSelectedHospital(hospital);
+  };
+
   return (
     <div className="flex">
-      {/* Sidebar */}
       <Sidebar />
-
-      {/* Main Content */}
       <div className="ml-64 p-8 w-full">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold text-black">Hospitals</h1>
-          <button
-            className="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-all"
-          >
-            Add Organization
-          </button>
+          <h1 className="text-2xl font-bold text-teal-600">Hospitals</h1>
+          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+            <DialogTrigger asChild>
+              <Button className="bg-teal-600 hover:bg-teal-700">
+                <Plus className="mr-2 h-4 w-4" />
+                Add Organization
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[700px]">
+              <DialogHeader>
+                <DialogTitle>Add New Health Organization</DialogTitle>
+              </DialogHeader>
+              <form onSubmit={handleAddOrganization} className="mt-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-4">
+                    <div>
+                      <Label htmlFor="name">Organization Name</Label>
+                      <Input
+                        id="name"
+                        value={newOrg.name}
+                        onChange={(e) =>
+                          setNewOrg({ ...newOrg, name: e.target.value })
+                        }
+                        placeholder="Enter organization name"
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="location">Location</Label>
+                      <Input
+                        id="location"
+                        value={newOrg.location}
+                        onChange={(e) =>
+                          setNewOrg({ ...newOrg, location: e.target.value })
+                        }
+                        placeholder="Enter location"
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="address">Address</Label>
+                      <Input
+                        id="address"
+                        value={newOrg.address}
+                        onChange={(e) =>
+                          setNewOrg({ ...newOrg, address: e.target.value })
+                        }
+                        placeholder="Enter address"
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="contact">Contact Number</Label>
+                      <Input
+                        id="contact"
+                        value={newOrg.contact}
+                        onChange={(e) =>
+                          setNewOrg({ ...newOrg, contact: e.target.value })
+                        }
+                        placeholder="Enter contact number"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div>
+                      <Label htmlFor="latitude">Latitude</Label>
+                      <Input
+                        id="latitude"
+                        value={newOrg.latitude}
+                        onChange={(e) =>
+                          setNewOrg({ ...newOrg, latitude: e.target.value })
+                        }
+                        placeholder="Enter latitude"
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="longitude">Longitude</Label>
+                      <Input
+                        id="longitude"
+                        value={newOrg.longitude}
+                        onChange={(e) =>
+                          setNewOrg({ ...newOrg, longitude: e.target.value })
+                        }
+                        placeholder="Enter longitude"
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="services">Services</Label>
+                      <Input
+                        id="services"
+                        value={newOrg.services}
+                        onChange={(e) =>
+                          setNewOrg({ ...newOrg, services: e.target.value })
+                        }
+                        placeholder="Enter services"
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="email">Email</Label>
+                      <Input
+                        id="email"
+                        value={newOrg.email}
+                        onChange={(e) =>
+                          setNewOrg({ ...newOrg, email: e.target.value })
+                        }
+                        placeholder="Enter email"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="flex justify-end space-x-4 mt-4">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setDialogOpen(false)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    className="bg-teal-600 hover:bg-teal-700"
+                  >
+                    Add Organization
+                  </Button>
+                </div>
+              </form>
+            </DialogContent>
+          </Dialog>
         </div>
 
         {loading ? (
@@ -57,9 +236,7 @@ const Hospital = () => {
                   <th className="px-4 py-2 border">Location</th>
                   <th className="px-4 py-2 border">Doctors</th>
                   <th className="px-4 py-2 border">Patients</th>
-                  <th className="px-4 py-2 border">Rating</th>
                   <th className="px-4 py-2 border">View</th>
-                  <th className="px-4 py-2 border">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -67,31 +244,22 @@ const Hospital = () => {
                   <tr
                     key={hospital.id}
                     className={`${
-                      index % 2 === 0 ? 'bg-white' : 'bg-gray-50'
+                      index % 2 === 0 ? "bg-white" : "bg-gray-50"
                     } text-gray-700`}
                   >
                     <td className="px-4 py-2 border">{hospital.name}</td>
                     <td className="px-4 py-2 border">{hospital.address}</td>
-                    <td className="px-4 py-2 border">{hospital._count.doctors}</td>
-                    <td className="px-4 py-2 border">{hospital.patients}</td>
-                    <td className="px-4 py-2 border">{hospital.rating}/5.0</td>
+                    <td className="px-4 py-2 border">
+                      {hospital._count.doctors}
+                    </td>
+                    <td className="px-4 py-2 border">{hospital.numberOfPatients}</td>
                     <td className="px-4 py-2 border">
                       <button
                         className="text-teal-600 hover:underline"
-                        onClick={() => console.log(`Viewing details for ${hospital.name}`)}
+                        onClick={() => handleViewDetails(hospital)}
                       >
                         <Eye className="h-5 w-5" />
                       </button>
-                    </td>
-                    <td className="px-4 py-2 border">
-                      <div className="flex space-x-2">
-                        <button className="text-teal-600 hover:underline">
-                          <Edit className="h-5 w-5" />
-                        </button>
-                        <button className="text-red-600 hover:underline">
-                          <Trash2 className="h-5 w-5" />
-                        </button>
-                      </div>
                     </td>
                   </tr>
                 ))}
@@ -99,6 +267,31 @@ const Hospital = () => {
             </table>
           </div>
         )}
+
+        <Dialog
+          open={selectedHospital !== null}
+          onOpenChange={() => setSelectedHospital(null)}
+        >
+          <DialogContent className="sm:max-w-[800px]">
+            <DialogHeader>
+              <DialogTitle>{selectedHospital?.name}</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <p>
+                <strong>Location:</strong> {selectedHospital?.address}
+              </p>
+              <p>
+                <strong>Contact:</strong> {selectedHospital?.contact}
+              </p>
+              <p>
+                <strong>Services:</strong> {selectedHospital?.services}
+              </p>
+              <p>
+                <strong>Email:</strong> {selectedHospital?.email}
+              </p>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );

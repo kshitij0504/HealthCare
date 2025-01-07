@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Sidebar from "../PatientSidebar";
 import HospitalCard from "./HospitalDoctorcard";
 import HospitalDetails from "./HospitalDetailModel.jsx";
-import { Menu } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import axios from "axios";
 
 const DashboardLayout = () => {
@@ -10,6 +10,26 @@ const DashboardLayout = () => {
   const [selectedHospital, setSelectedHospital] = useState(null);
   const [hospitalDetails, setHospitalDetails] = useState([]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  // Close sidebar on smaller screens by default
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 1024) {
+        setSidebarOpen(false);
+      } else {
+        setSidebarOpen(true);
+      }
+    };
+
+    // Set initial state
+    handleResize();
+
+    // Add event listener
+    window.addEventListener("resize", handleResize);
+
+    // Cleanup
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     const fetchHospitals = async () => {
@@ -35,6 +55,10 @@ const DashboardLayout = () => {
         : Object.values(response.data);
       setHospitalDetails(dataAsArray);
       setSelectedHospital(hospitalId);
+      // Close sidebar on mobile when selecting a hospital
+      if (window.innerWidth < 1024) {
+        setSidebarOpen(false);
+      }
     } catch (error) {
       console.error("Error fetching hospital details:", error);
     }
@@ -45,24 +69,45 @@ const DashboardLayout = () => {
     setHospitalDetails([]);
   };
 
-  return (
-    <div className="min-h-screen bg-gray-50 flex">
-      {/* Sidebar */}
-      <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
 
-      {/* Main Content */}
-      <div className="lg:ml-64 flex-1">
-        <header className="bg-white border-b flex items-center justify-between px-6 py-4">
+  return (
+    <div className="min-h-screen bg-gray-50 flex relative">
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 lg:hidden z-20"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      <div
+        className={`fixed lg:static inset-y-0 left-0 transform ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        } lg:translate-x-0 transition-transform duration-200 ease-in-out z-30`}
+      >
+        <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+      </div>
+      <div className="flex-1 min-w-0 lg:ml-64">
+        <header className="bg-white border-b p-4 lg:p-8 flex items-center justify-between">
           <button
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="p-2 rounded-lg hover:bg-gray-100 lg:hidden"
+            onClick={toggleSidebar}
+            className="p-2 rounded-lg lg:hidden hover:bg-gray-100"
+            aria-label="Toggle sidebar"
           >
-            <Menu className="w-6 h-6" />
+            {sidebarOpen ? (
+              <X className="w-6 h-6" />
+            ) : (
+              <Menu className="w-6 h-6" />
+            )}
           </button>
-          <h1 className="text-xl font-semibold mb-9">Hospital Details</h1>
+          <h2 className="text-xl lg:text-2xl font-bold text-gray-800">
+            Hospital Details
+          </h2>
         </header>
 
-        <main className="p-6">
+        <main className="p-4 lg:p-6">
           {!selectedHospital ? (
             <div className="grid grid-cols-1 gap-4">
               {hospitals.map((hospital) => (

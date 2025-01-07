@@ -1,15 +1,34 @@
 import React, { useEffect, useState } from "react";
-import { Search, Calendar, Clock, UserRound, Building2 } from "lucide-react";
+import {
+  Calendar,
+  Clock,
+  UserRound,
+  Building2,
+  Menu,
+} from "lucide-react";
 import AppointmentModal from "./AppointmentModal";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { Card, CardContent } from "@/components/ui/card";
+import Sidebar from "../PatientSidebar";
+
 const AppointmentsList = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [appointments, setAppointments] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const { currentUser } = useSelector((state) => state.user || {});
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        setSidebarOpen(false);
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -58,11 +77,7 @@ const AppointmentsList = () => {
     try {
       setIsLoading(true);
       const response = await axios.get(
-<<<<<<< HEAD
-       `http://localhost:5000/user/appointment/${currentUser.data.id}`,
-=======
-        `https://curenest.onrender.com/user/appointment/${currentUser.data.id}`,
->>>>>>> fa0d51fa8cfd433b94e7e6d1222c773c2eeca265
+        `http://localhost:5000/user/appointment/${currentUser.data.id}`,
         {
           headers: { "Content-Type": "application/json" },
           withCredentials: true,
@@ -86,16 +101,38 @@ const AppointmentsList = () => {
   const filteredAppointments = getFilteredAppointments();
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gray-50">
+      <div
+        id="sidebar"
+        className={`fixed top-0 left-0 h-full z-30 w-64 bg-white shadow-md transition-transform duration-300 transform ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        } lg:translate-x-0`}
+      >
+        <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+      </div>
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 z-20 bg-black bg-opacity-50 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        ></div>
+      )}
+
+      {!sidebarOpen && (
+        <button
+          className="fixed top-4 left-4 z-40 p-4 rounded-md lg:hidden"
+          onClick={() => setSidebarOpen(true)}
+        >
+          <Menu className="w-6 h-6" />
+        </button>
+      )}
+
       <Card className="bg-white shadow-lg">
         <CardContent className="p-6">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
-            <h2 className="text-2xl font-bold text-gray-800">
-              My Appointments
-            </h2>
+            <h2 className="text-2xl font-bold text-gray-800"></h2>
             <button
               onClick={() => setShowModal(true)}
-              className="bg-teal-500 hover:bg-teal-600 text-white px-6 py-2 rounded-lg shadow-md transition-colors duration-200"
+              className="bg-teal-500 hover:bg-teal-600  text-white px-6 py-2 rounded-lg shadow-md transition-colors duration-200"
             >
               Add Appointment
             </button>
