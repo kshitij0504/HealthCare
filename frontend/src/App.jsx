@@ -28,7 +28,7 @@ import AdminDashboard_New from "./Admin_new/AdminDash.jsx";
 import AdminHospital from "./Admin_new/Hospital.jsx";
 import AppointmentScheduler from "./Patient/PatientAppoinment/AppointmentScheduler.jsx";
 import HospitalDetailModel from "./Patient/HospitalCard/HospitalDetailModel.jsx";
-import DoctorDashboard from "./Doctor/DoctorDash.jsx";
+import DoctorDashboard from "./Doctor/Doctordash.jsx";
 import DoctorPatientRecords from "./Doctor/DoctorPatientRecorsd/Doctorpatientrecords.jsx";
 import AddDoctor from "./Hospital/HospitalDoctorList.jsx/AddDoctor.jsx";
 import DoctorApointmentList from "./Doctor/DoctorAppoinments/Doctorappoinments.jsx";
