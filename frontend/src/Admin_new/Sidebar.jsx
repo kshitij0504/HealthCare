@@ -11,7 +11,7 @@ import {
   Settings,
   ChevronRight,
 } from "lucide-react";
-
+import logo from "../../../assets/CureNest_logo.svg"
 const Sidebar = ({ activeNav, setActiveNav }) => {
   const navItems = [
     { icon: Settings, name: "Dashboard", path: "/admin/dashboard" },
@@ -25,7 +25,7 @@ const Sidebar = ({ activeNav, setActiveNav }) => {
     <div className="fixed w-64 h-full bg-white border-r border-gray-200 p-4 shadow-sm">
       <div className="flex items-center space-x-2 mb-8 p-4">
         <img
-          src="../../../assets/CureNest_logo.svg"
+          src={logo}
           alt="Logo"
           className="h-50 w-100 object-contain"
         />

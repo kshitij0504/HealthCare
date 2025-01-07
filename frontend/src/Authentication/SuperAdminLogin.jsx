@@ -19,7 +19,7 @@ import {
   signinFailure,
 } from "../redux/user/userSlice";
 import axios from "axios";
-
+import logo from "../../assets/CureNest_logo.svg"
 const SuperAdminLogin = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -80,7 +80,7 @@ const SuperAdminLogin = () => {
           <CardHeader className="space-y-1 flex justify-center">
             <div className="flex justify-center">
           <img
-          src="../../../assets/CureNest_logo.svg"
+          src={logo}
           alt="Logo"
           className="h-16 w-48 object-contain"
         />

@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Home, Calendar, Users, Activity, LogOut, X } from "lucide-react";
-
+import logo from "../../../assets/CureNest_logo.svg"
 const Sidebar = ({ isSidebarOpen, toggleSidebar, isMobile }) => {
   const menuItems = [
     { icon: Home, label: "Dashboard", path: "/hospitaldash" },
@@ -29,7 +29,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar, isMobile }) => {
         <div className="h-24 border-b flex items-center justify-between px-4">
           {isSidebarOpen && (
             <img
-              src="../../../assets/CureNest_logo.svg"
+              src={logo}
               alt="Logo"
               className="h-16 w-48 object-contain"
             />

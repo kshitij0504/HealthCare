@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import image1 from "../../assets/contactus.jpg";
 
 const ContactUs = () => {
   const [formData, setFormData] = useState({
@@ -100,7 +101,7 @@ const ContactUs = () => {
           </div>
           <div>
             <img
-              src="../../../assets/contactus.jpg"
+              src={image1}
               alt="Contact Us"
               className="w-full h-auto rounded-lg shadow-lg object-cover"
               style={{ maxHeight: '500px' }}

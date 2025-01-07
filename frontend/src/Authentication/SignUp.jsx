@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import axios from "axios";
 import OAuth from "./OAuth";
 import { useNavigate } from "react-router-dom";
+import logo from "../../assets/CureNest_logo.svg"
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -127,7 +128,7 @@ const SignUp = () => {
       <Card className="w-full max-w-md shadow-xl">
         <CardHeader>
           <img
-            src="../../assets/CureNest_logo.svg"
+            src={logo}
             alt="CureNest Logo"
             className="mx-auto h-15 w-25"
           />

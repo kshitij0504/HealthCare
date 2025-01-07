@@ -3,7 +3,7 @@ import { Building2, Stethoscope, Lock, User } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useNavigate } from 'react-router-dom';
-
+import logo from "../../assets/CureNest_logo.svg"
 const LoginPage = () => {
   const [userType, setUserType] = useState('org');
   const [formData, setFormData] = useState({ id: '', password: '', accessId: '' });
@@ -61,7 +61,7 @@ const LoginPage = () => {
         <Card className="w-full bg-white shadow-xl border-teal-100">
           <CardHeader>
           <img
-          src="../../../assets/CureNest_logo.svg"
+          src={logo}
           alt="Logo"
           className=" ml-10 h-50 w-80 object-contain"
         />

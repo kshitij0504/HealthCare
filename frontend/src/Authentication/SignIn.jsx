@@ -182,7 +182,7 @@ import { useDispatch } from "react-redux";
 import { AlertCircle } from "lucide-react";
 import { signinStart, signinSuccess, signinFailure } from "../redux/user/userSlice";
 import Cookies from 'js-cookie';  // You'll need to install js-cookie package
-
+import logo from "../../assets/CureNest_logo.svg"
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -284,7 +284,7 @@ const SignIn = () => {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center space-y-4">
           <img
-            src="../../assets/CureNest_logo.svg"
+            src={logo}
             alt="CureNest Logo"
             className="mx-auto h-15 w-25"
           />

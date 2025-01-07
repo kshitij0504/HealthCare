@@ -375,7 +375,11 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import ContactUs from "./ContactUs";
-
+import image1 from "../../assets/CureNest_logo.svg";
+import image2 from "../../assets/hospital1.jpg"
+import image3 from "../../assets/hospital2.jpg"
+import image4 from "../../assets/hospital3.jpg"
+import image5 from "../../assets/hospital4.jpg"
 const LandingPage = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -383,17 +387,16 @@ const LandingPage = () => {
 
   return (
     <div className="flex flex-col min-h-screen fonts-Poppins">
-     
       {/* Main Navigation */}
       <nav className="bg-white shadow-lg sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex justify-between items-center h-25">
             <div className="flex items-center">
-            <img
-          src="../../../assets/CureNest_logo.svg"
-          alt="Logo"
-          className="h-50 w-100 object-contain"
-        />
+              <img
+                src={image1}
+                alt="Logo"
+                className="h-50 w-100 object-contain"
+              />
             </div>
 
             {/* Desktop Menu */}
@@ -410,7 +413,7 @@ const LandingPage = () => {
               >
                 Hospitals
               </a>
-              
+
               <a
                 href="#"
                 className="text-gray-700 hover:text-teal-600 font-medium"
@@ -456,9 +459,9 @@ const LandingPage = () => {
                 Contact
               </a>
               <a href="/signin">
-              <button className="bg-teal-600 text-white px-6 py-2 rounded-md hover:bg-teal-700 transition duration-300">
-                Sign In
-              </button>
+                <button className="bg-teal-600 text-white px-6 py-2 rounded-md hover:bg-teal-700 transition duration-300">
+                  Sign In
+                </button>
               </a>
             </div>
 
@@ -505,9 +508,9 @@ const LandingPage = () => {
                 Contact
               </a>
               <a href="/signin">
-              <button className="mt-4 w-full bg-teal-600 text-white px-6 py-2 rounded-md hover:bg-teal-700">
-                Get Appointment
-              </button>
+                <button className="mt-4 w-full bg-teal-600 text-white px-6 py-2 rounded-md hover:bg-teal-700">
+                  Get Appointment
+                </button>
               </a>
             </div>
           )}
@@ -516,108 +519,129 @@ const LandingPage = () => {
 
       {/* Hero Section */}
       <section className="relative text-black">
-  {/* Slideshow */}
-  <Swiper
-    modules={[Navigation, Autoplay]}
-    navigation
-    pagination={{ clickable: true }}
-    autoplay={{ delay: 5000, disableOnInteraction: false }}
-    loop
-    className="h-screen"
-  >
-    <SwiperSlide>
-      <div
-        className="h-screen bg-cover bg-center flex items-center"
-        style={{
-          backgroundImage: `url('https://wpthemesgrid.com/themes/medikit/img/slider2.jpg')`,
-        }}
-      >
-        <div className="bg-opacity-80 p-8 rounded-lg max-w-xl ml-12">
-          <h1 className="text-5xl font-bold leading-tight">
-            <span className="text-teal-600">Protect</span> Your Health And Take 
-            <span className="text-teal-600"> Care</span> Of Your Health
-          </h1>
-          <p className="mt-6 text-lg text-gray-700">
-            We provide <span className="font-semibold text-teal-600">special tips</span> 
-            and <span className="text-teal-500">advice</span> for health care treatment and use 
-            high-level <span className="font-semibold text-teal-600">advanced technology</span> in our hospital.
-          </p>
-          <div className="mt-8 flex space-x-4">
-            <a href="/signin">
-              <button className="bg-teal-600 text-white px-8 py-3 rounded-md hover:bg-teal-700 transition duration-300">
-                Get Appointment
-              </button>
-            </a>
-            <button className="border-2 border-teal-600 text-teal-600 px-8 py-3 rounded-md hover:bg-teal-600 hover:text-white transition duration-300">
-              Learn More
-            </button>
-          </div>
-        </div>
-      </div>
-    </SwiperSlide>
-    <SwiperSlide>
-      <div
-        className="h-screen bg-cover bg-center flex items-center"
-        style={{
-          backgroundImage: `url('https://wpthemesgrid.com/themes/medikit/img/slider3.jpg')`,
-        }}
-      >
-        <div className="bg-opacity-80 p-8 rounded-lg max-w-xl ml-12">
-          <h1 className="text-5xl font-bold leading-tight">
-            <span className="text-teal-600">Advanced</span> Health Care 
-            <span className="text-black-500">Technology</span>
-          </h1>
-          <p className="mt-6 text-lg text-gray-700">
-            Discover <span className="font-semibold text-teal-600">cutting-edge medical solutions</span> with our 
-            <span className="text-teal-600">state-of-the-art facilities</span> and expert team.
-          </p>
-          <div className="mt-8 flex space-x-4">
-            <button className="bg-teal-600 text-white px-8 py-3 rounded-md hover:bg-teal-700 transition duration-300">
-              Book a Consultation
-            </button>
-            <button className="border-2 border-teal-600 text-teal-600 px-8 py-3 rounded-md hover:bg-teal-600 hover:text-white transition duration-300">
-              Learn More
-            </button>
-          </div>
-        </div>
-      </div>
-    </SwiperSlide>
-    <SwiperSlide>
-      <div
-        className="h-screen bg-cover bg-center flex items-center"
-        style={{
-          backgroundImage: `url('https://wpthemesgrid.com/themes/medikit/img/slider.jpg')`,
-        }}
-      >
-        <div className="bg-opacity-80 p-8 rounded-lg max-w-xl ml-12">
-          <h1 className="text-5xl font-bold leading-tight">
-            <span className="text-teal-600">Quality</span> Healthcare 
-            <span className="text-teal-600">Services</span>
-          </h1>
-          <p className="mt-6 text-lg text-gray-700">
-            We are dedicated to providing <span className="font-semibold text-teal-600">quality healthcare services</span> 
-            to ensure the <span className="text-teal-600">well-being</span> of our patients.
-          </p>
-          <div className="mt-8 flex space-x-4">
-            <button className="bg-teal-600 text-white px-8 py-3 rounded-md hover:bg-teal-700 transition duration-300">
-              Contact Us
-            </button>
-            <button className="border-2 border-teal-600 text-teal-600 px-8 py-3 rounded-md hover:bg-teal-600 hover:text-white transition duration-300">
-              Learn More
-            </button>
-          </div>
-        </div>
-      </div>
-    </SwiperSlide>
-  </Swiper>
-</section>
-
+        {/* Slideshow */}
+        <Swiper
+          modules={[Navigation, Autoplay]}
+          navigation
+          pagination={{ clickable: true }}
+          autoplay={{ delay: 5000, disableOnInteraction: false }}
+          loop
+          className="h-screen"
+        >
+          <SwiperSlide>
+            <div
+              className="h-screen bg-cover bg-center flex items-center"
+              style={{
+                backgroundImage: `url('https://wpthemesgrid.com/themes/medikit/img/slider2.jpg')`,
+              }}
+            >
+              <div className="bg-opacity-80 p-8 rounded-lg max-w-xl ml-12">
+                <h1 className="text-5xl font-bold leading-tight">
+                  <span className="text-teal-600">Protect</span> Your Health And
+                  Take
+                  <span className="text-teal-600"> Care</span> Of Your Health
+                </h1>
+                <p className="mt-6 text-lg text-gray-700">
+                  We provide{" "}
+                  <span className="font-semibold text-teal-600">
+                    special tips
+                  </span>
+                  and <span className="text-teal-500">advice</span> for health
+                  care treatment and use high-level{" "}
+                  <span className="font-semibold text-teal-600">
+                    advanced technology
+                  </span>{" "}
+                  in our hospital.
+                </p>
+                <div className="mt-8 flex space-x-4">
+                  <a href="/signin">
+                    <button className="bg-teal-600 text-white px-8 py-3 rounded-md hover:bg-teal-700 transition duration-300">
+                      Get Appointment
+                    </button>
+                  </a>
+                  <button className="border-2 border-teal-600 text-teal-600 px-8 py-3 rounded-md hover:bg-teal-600 hover:text-white transition duration-300">
+                    Learn More
+                  </button>
+                </div>
+              </div>
+            </div>
+          </SwiperSlide>
+          <SwiperSlide>
+            <div
+              className="h-screen bg-cover bg-center flex items-center"
+              style={{
+                backgroundImage: `url('https://wpthemesgrid.com/themes/medikit/img/slider3.jpg')`,
+              }}
+            >
+              <div className="bg-opacity-80 p-8 rounded-lg max-w-xl ml-12">
+                <h1 className="text-5xl font-bold leading-tight">
+                  <span className="text-teal-600">Advanced</span> Health Care
+                  <span className="text-black-500">Technology</span>
+                </h1>
+                <p className="mt-6 text-lg text-gray-700">
+                  Discover{" "}
+                  <span className="font-semibold text-teal-600">
+                    cutting-edge medical solutions
+                  </span>{" "}
+                  with our
+                  <span className="text-teal-600">
+                    state-of-the-art facilities
+                  </span>{" "}
+                  and expert team.
+                </p>
+                <div className="mt-8 flex space-x-4">
+                  <button className="bg-teal-600 text-white px-8 py-3 rounded-md hover:bg-teal-700 transition duration-300">
+                    Book a Consultation
+                  </button>
+                  <button className="border-2 border-teal-600 text-teal-600 px-8 py-3 rounded-md hover:bg-teal-600 hover:text-white transition duration-300">
+                    Learn More
+                  </button>
+                </div>
+              </div>
+            </div>
+          </SwiperSlide>
+          <SwiperSlide>
+            <div
+              className="h-screen bg-cover bg-center flex items-center"
+              style={{
+                backgroundImage: `url('https://wpthemesgrid.com/themes/medikit/img/slider.jpg')`,
+              }}
+            >
+              <div className="bg-opacity-80 p-8 rounded-lg max-w-xl ml-12">
+                <h1 className="text-5xl font-bold leading-tight">
+                  <span className="text-teal-600">Quality</span> Healthcare
+                  <span className="text-teal-600">Services</span>
+                </h1>
+                <p className="mt-6 text-lg text-gray-700">
+                  We are dedicated to providing{" "}
+                  <span className="font-semibold text-teal-600">
+                    quality healthcare services
+                  </span>
+                  to ensure the{" "}
+                  <span className="text-teal-600">well-being</span> of our
+                  patients.
+                </p>
+                <div className="mt-8 flex space-x-4">
+                  <button className="bg-teal-600 text-white px-8 py-3 rounded-md hover:bg-teal-700 transition duration-300">
+                    Contact Us
+                  </button>
+                  <button className="border-2 border-teal-600 text-teal-600 px-8 py-3 rounded-md hover:bg-teal-600 hover:text-white transition duration-300">
+                    Learn More
+                  </button>
+                </div>
+              </div>
+            </div>
+          </SwiperSlide>
+        </Swiper>
+      </section>
 
       {/* Services Section */}
       <section className="py-20 bg-gray-100">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-12">
-            <span className="text-teal-600 text-5xlfont-semibold">Our Services</span>
+            <span className="text-teal-600 text-5xlfont-semibold">
+              Our Services
+            </span>
             <h2 className="mt-2 text-3xl font-bold text-gray-900">
               We Offer Different Services To Improve Your Health
             </h2>
@@ -700,9 +724,11 @@ const LandingPage = () => {
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-12">
-            <span className="text-teal-600 text-5xl font-semibold">HealthCare Organization</span>
+            <span className="text-teal-600 text-5xl font-semibold">
+              HealthCare Organization
+            </span>
             <h2 className="mt-2 text-3xl font-bold text-gray-900">
-               Outstanding Health Organization
+              Outstanding Health Organization
             </h2>
           </div>
           <div className="grid md:grid-cols-4 gap-8">
@@ -710,22 +736,22 @@ const LandingPage = () => {
               {
                 name: "Hospital-1",
                 Location: "surat",
-                image: "../../../assets/hospital1.jpg",
+                image: image2,
               },
               {
                 name: "Hospital-2",
                 Location: "Ahmedabad",
-                image: "../../../assets/hospital2.jpg",
+                image: image3,
               },
               {
                 name: "Hospital-3",
                 Location: "Vadodara",
-                image: "../../../assets/hospital3.jpg",
+                image: image4,
               },
               {
                 name: "Hospital-4",
                 Location: "Gandhinagar",
-                image: "../../../assets/hospital4.jpg",
+                image: image5,
               },
             ].map((hospital, index) => (
               <div
@@ -738,7 +764,6 @@ const LandingPage = () => {
                     alt={hospital.name}
                     className="w-full h-80 object-cover"
                   />
-                  
                 </div>
                 <div className="p-6 text-center">
                   <h3 className="text-xl font-bold text-gray-800">
@@ -753,7 +778,7 @@ const LandingPage = () => {
       </section>
 
       {/* ContactUs */}
-      <ContactUs/>
+      <ContactUs />
 
       {/* Footer */}
       <footer className="bg-gray-900 text-white pt-20 pb-6">

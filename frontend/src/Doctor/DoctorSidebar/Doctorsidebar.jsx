@@ -8,7 +8,7 @@ import {
   LogOut,
   X,
 } from "lucide-react";
-
+import logo from "../../../assets/CureNest_logo.svg"
 const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
   const menuItems = [
     { icon: Home, label: "Dashboard", path: "/doctordash" },
@@ -37,7 +37,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
         <div className="h-full flex flex-col">
           <div className="h-20 border-b flex items-center justify-between px-4">
           <img
-          src="../../../assets/CureNest_logo.svg"
+          src={logo}
           alt="Logo"
           className="h-50 w-100 object-contain"
         />

@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/select";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
+import logo from "../../assets/CureNest_logo.svg"
 
 const WelcomeHealthForm = () => {
   const navigate = useNavigate();
@@ -95,7 +96,7 @@ const WelcomeHealthForm = () => {
       <Card className="w-full max-w-2xl shadow-xl">
         <CardHeader>
         <img
-            src="../../assets/CureNest_logo.svg"
+            src={logo}
             alt="CureNest Logo"
             className="mx-auto h-15 w-25"
           />
