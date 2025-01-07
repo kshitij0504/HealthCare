@@ -7,6 +7,7 @@ const userRoutes = require("./routes/userRoute")
 const doctorRoutes= require("./routes/doctorRoute")
 const healthOrgRoutes = require("./routes/healthOrgRoute")
 const tempRoutes=require("./routes/temproute")
+const contactRoutes = require('./routes/ContactRoute.js');
 const cookieParser = require("cookie-parser");
 const cors = require("cors")
 
@@ -28,7 +29,7 @@ app.use("/auth", authRoutes);
 app.use("/details", detailsRoutes);
 app.use("/doctor",doctorRoutes);
 app.use("/temp",tempRoutes);
-
+app.use("/api",contactRoutes);
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
