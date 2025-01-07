@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Home, Calendar, Users, Activity, LogOut, X } from "lucide-react";
-import logo from "../../../assets/CureNest_logo.svg"
+import logo from "../../assets/CureNest_logo.svg"
 const Sidebar = ({ isSidebarOpen, toggleSidebar, isMobile }) => {
   const menuItems = [
     { icon: Home, label: "Dashboard", path: "/hospitaldash" },
