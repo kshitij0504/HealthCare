@@ -302,7 +302,7 @@ const DoctorDashboard = () => {
     try {
       setIsLoading(true);
       const response = await axios.get(
-        "http://localhost:5000/healthorg/getDoctor",
+        `${import.meta.env.VITE_BACKEND_URL}/healthorg/getDoctor`,
         {
           withCredentials: true,
         }

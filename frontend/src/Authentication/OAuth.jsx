@@ -31,7 +31,7 @@ const OAuth = () => {
       
       // Make server request with the token
       const response = await axios.post(
-        "http://localhost:5000/auth/google-auth",
+        `${import.meta.env.VITE_BACKEND_URL}/auth/google-auth`,
         {
           username: resultsFromGoogle.user.displayName,
           email: resultsFromGoogle.user.email,

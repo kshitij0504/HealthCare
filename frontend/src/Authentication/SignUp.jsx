@@ -91,7 +91,7 @@ const SignUp = () => {
     
     setLoading(true);
     try {
-      await axios.post("http://localhost:5000/auth/register", formData);
+      await axios.post(`${import.meta.env.VITE_BACKEND_URL}/auth/register`, formData);
       setStep(2);
     } catch (error) {
       setErrors({ submit: error.response?.data?.message || "Registration failed" });
@@ -104,7 +104,7 @@ const SignUp = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await axios.post("http://localhost:5000/auth/verify-otp", {
+      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/auth/verify-otp`, {
         email: formData.email,
         otp: formData.otp,
       });

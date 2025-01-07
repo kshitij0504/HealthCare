@@ -33,7 +33,7 @@ const Doctor = () => {
 
   const fetchDoctors = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/admin/doctor", {
+      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/admin/doctor`, {
         withCredentials: true,
       });
       setDoctors(response.data);

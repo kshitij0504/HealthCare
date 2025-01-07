@@ -33,7 +33,7 @@ const Hospital = () => {
   useEffect(() => {
     const fetchHospitals = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/admin/org", {
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/admin/org`, {
           withCredentials: true,
         });
         setHospitals(response.data.data);
@@ -52,7 +52,7 @@ const Hospital = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:5000/admin/add",
+        `${import.meta.env.VITE_BACKEND_URL}/admin/add`,
         newOrg,
         {
           withCredentials: true,

@@ -26,7 +26,7 @@ const Patient = () => {
     const fetchPatients = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get("http://localhost:5000/admin/users", {
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/admin/users`, {
           withCredentials: true,
         });
         setPatients(response.data);

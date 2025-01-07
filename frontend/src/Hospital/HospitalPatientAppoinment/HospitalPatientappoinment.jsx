@@ -33,7 +33,7 @@ const PatientDashboard = () => {
       try {
         setIsLoading(true);
         const response = await axios.get(
-          "http://localhost:5000/healthorg/getPatient",
+          `${import.meta.env.VITE_BACKEND_URL}/healthorg/getPatient`,
           {
             withCredentials: true,
           }

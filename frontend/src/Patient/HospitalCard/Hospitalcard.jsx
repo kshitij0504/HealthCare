@@ -35,7 +35,7 @@ const DashboardLayout = () => {
     const fetchHospitals = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5000/user/organizations"
+          `${import.meta.env.VITE_BACKEND_URL}/user/organizations`
         );
         setHospitals(response.data);
       } catch (error) {
@@ -48,7 +48,7 @@ const DashboardLayout = () => {
   const handleHospitalClick = async (hospitalId) => {
     try {
       const response = await axios.get(
-        `http://localhost:5000/user/doctors/${hospitalId}`
+        `${import.meta.env.VITE_BACKEND_URL}/user/doctors/${hospitalId}`
       );
       const dataAsArray = Array.isArray(response.data)
         ? response.data

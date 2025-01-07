@@ -46,7 +46,7 @@ const DoctorAppointment = () => {
       try {
         const token = Cookies.get("token");
         const response = await axios.get(
-          "http://localhost:5000/doctor/appointments",
+          `${import.meta.env.VITE_BACKEND_URL}/doctor/appointments`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

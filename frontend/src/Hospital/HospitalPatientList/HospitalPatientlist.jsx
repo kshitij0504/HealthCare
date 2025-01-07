@@ -50,7 +50,7 @@ const PatientList = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "http://localhost:5000/healthorg/getPatient",
+          `${import.meta.env.VITE_BACKEND_URL}/healthorg/getPatient`,
           {
             credentials: "include",
           }

@@ -203,7 +203,7 @@ const AdminDashboard_New = () => {
   const fetchOrganizations = async () => {
     try {
       setLoading(true);
-      const response = await axios.get("http://localhost:5000/admin/org", {
+      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/admin/org`, {
         withCredentials: true,
       });
       console.log(response)

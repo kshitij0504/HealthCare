@@ -18,8 +18,8 @@ const LoginPage = () => {
     
     try {
       const endpoint = userType === 'org' 
-        ? 'http://localhost:5000/healthorg/signin'
-        : 'http://localhost:5000/auth/doctor-signin';
+        ? `${import.meta.env.VITE_BACKEND_URL}/healthorg/signin`
+        : `${import.meta.env.VITE_BACKEND_URL}/auth/doctor-signin`;
         
       const requestBody = userType === 'org'
         ? { id: formData.id, password: formData.password }

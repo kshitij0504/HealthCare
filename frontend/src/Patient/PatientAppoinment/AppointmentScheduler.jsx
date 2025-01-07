@@ -50,7 +50,7 @@ const AppointmentScheduler = ({ onClose, onAppointmentBooked }) => {
         setLoading(true);
         try {
           const { data } = await axios.get(
-            `http://localhost:5000/user/organizations-by-specialty/${selectedSpecialty}`
+            `${import.meta.env.VITE_BACKEND_URL}/user/organizations-by-specialty/${selectedSpecialty}`
           );
           console.log(data)
           setOrganizations(Array.isArray(data.organizations) ? data.organizations : []);
@@ -74,7 +74,7 @@ const AppointmentScheduler = ({ onClose, onAppointmentBooked }) => {
       const fetchDoctorsBySpecialty = async () => {
         try {
           const { data } = await axios.get(
-            `http://localhost:5000/user/user/doctors/${selectedOrganization}/${selectedSpecialty}`
+            `${import.meta.env.VITE_BACKEND_URL}/user/user/doctors/${selectedOrganization}/${selectedSpecialty}`
           );
           console.log(data.doctors)
           setDoctors(data.doctors);
@@ -108,7 +108,7 @@ const AppointmentScheduler = ({ onClose, onAppointmentBooked }) => {
       const fetchTimeSlots = async () => {
         try {
           const { data } = await axios.get(
-            "http://localhost:5000/user/available-slots",
+            `${import.meta.env.VITE_BACKEND_URL}/user/available-slots`,
             {
               params: { doctorId: selectedDoctor, date: selectedDate }
             }
@@ -138,7 +138,7 @@ const AppointmentScheduler = ({ onClose, onAppointmentBooked }) => {
 
     try {
       const { data } = await axios.post(
-        "http://localhost:5000/user/book-appointment",
+        `${import.meta.env.VITE_BACKEND_URL}/user/book-appointment`,
         {
           scheduleId: selectedSlot.scheduleId,
           date: selectedDate,

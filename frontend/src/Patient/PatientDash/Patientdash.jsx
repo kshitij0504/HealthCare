@@ -57,12 +57,12 @@ const PatientDashboard = () => {
       try {
         const [userResponse, healthResponse, appointmentsResponse] =
           await Promise.all([
-            fetch(`http://localhost:5000/temp/profile/${currentUser.data.id}`),
+            fetch(`${import.meta.env.VITE_BACKEND_URL}/temp/profile/${currentUser.data.id}`),
             fetch(
-              `http://localhost:5000/temp/health-data/${currentUser.data.id}`
+              `${import.meta.env.VITE_BACKEND_URL}/temp/health-data/${currentUser.data.id}`
             ),
             fetch(
-              `http://localhost:5000/temp/appointments/${currentUser.data.id}`
+              `${import.meta.env.VITE_BACKEND_URL}/temp/appointments/${currentUser.data.id}`
             ),
           ]);
 

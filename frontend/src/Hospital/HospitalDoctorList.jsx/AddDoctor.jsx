@@ -52,7 +52,7 @@ const AddDoctor = () => {
 
     try {
       const response = await fetch(
-        "http://localhost:5000/healthorg/add-doctor",
+        `${import.meta.env.VITE_BACKEND_URL}/healthorg/add-doctor`,
         {
           method: "POST",
           headers: {

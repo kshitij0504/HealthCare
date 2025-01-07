@@ -76,7 +76,7 @@ const WelcomeHealthForm = () => {
       };
 
       const response = await axios.post(
-        "http://localhost:5000/details",
+        `${import.meta.env.VITE_BACKEND_URL}/details`,
         payload
       );
       if (response.status === 201) {
