@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { v4: uuidv4 } = require("uuid");
 const { sendEmail } = require("../config/emailService");
+
 const healthOrgSignin = async (req, res) => {
   const { id, password } = req.body;
 
@@ -32,14 +33,36 @@ const healthOrgSignin = async (req, res) => {
       { expiresIn: "1h" }
     );
 
-    res.cookie("healthOrgToken", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      maxAge: 3600000,
-      sameSite: "Strict",
-    });
+    const cookieOptions = {
+      httpOnly: true, // Prevents client-side access
+      secure: process.env.NODE_ENV === "production", // Enable in production (HTTPS)
+      sameSite: 'None', // Helps prevent CSRF attacks
+      path: '/', // Accessible across the entire site
+    };
 
-    res.status(200).json({ message: "Sign-in successful", token, healthOrg });
+    // res.cookie("healthOrgToken", token, {
+    //   httpOnly: true,
+    //   secure: process.env.NODE_ENV === "production",
+    //   maxAge: 3600000,
+    //   sameSite: "Strict",
+    // });
+
+    // res.status(200).json({ message: "Sign-in successful", token, healthOrg });
+
+    res.cookie("healthOrgToken", token, cookieOptions).status(200).json({
+      message: "Sign-in successful",
+      data: {
+        healthOrg: {
+          id: healthOrg.id,
+          name: healthOrg.name,
+          email: healthOrg.email,
+          contact: healthOrg.contact,
+          address: healthOrg.address,
+          doctors: healthOrg.doctors
+        },
+        token
+      }
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });

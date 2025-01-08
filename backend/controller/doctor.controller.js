@@ -32,14 +32,37 @@ const doctorSignin = async (req, res) => {
       { expiresIn: "1h" }
     );
 
-    res.cookie("doctorToken", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      maxAge: 3600000,
-      sameSite: "Strict",
-    });
+    // res.cookie("doctorToken", token, {
+    //   httpOnly: true,
+    //   secure: process.env.NODE_ENV === "production",
+    //   maxAge: 3600000,
+    //   sameSite: "Strict",
+    // });
 
-    res.status(200).json({ message: "Login successful", token, data: doctor });
+    const cookieOptions = {
+      httpOnly: true, // Prevents client-side access
+      secure: process.env.NODE_ENV === "production", // Enable in production (HTTPS)
+      sameSite: 'None', // Helps prevent CSRF attacks
+      path: '/', // Accessible across the entire site
+    };
+
+    // res.status(200).json({ message: "Login successful", token, data: doctor });
+
+    res.cookie("doctorToken", token, cookieOptions).status(200).json({
+      message: "Login successful",
+      data: {
+        doctor: {
+          id: doctor.id,
+          firstname: doctor.firstname,
+          lastname: doctor.lastname,
+          email: doctor.email,
+          contact: doctor.contact,
+          specialty: doctor.specialty,
+          organization: doctor.organization,
+        },
+        token,
+      },
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });

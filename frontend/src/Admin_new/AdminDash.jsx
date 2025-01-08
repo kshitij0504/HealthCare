@@ -182,7 +182,7 @@ const AdminDashboard_New = () => {
   });
 
   useEffect(() => {
-    if (!currentUser?.data?.role || currentUser?.data?.role !== "ADMIN") {
+    if (!currentUser?.data?.user.role || currentUser?.data?.user.role !== "ADMIN") {
       navigate("/");
     }
   }, [currentUser, navigate]);

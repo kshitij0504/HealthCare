@@ -19,7 +19,7 @@ import {
   signinFailure,
 } from "../redux/user/userSlice";
 import axios from "axios";
-import logo from "../../assets/CureNest_logo.svg"
+import logo from "../../assets/CureNest_logo.svg";
 const SuperAdminLogin = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -45,18 +45,20 @@ const SuperAdminLogin = () => {
           withCredentials: true,
         }
       );
-
+      console.log(response.data.data.user.role);
       dispatch(signinSuccess({ user: response.data }));
-      console.log(response.data.data.role)
+
       // Check user role and redirect accordingly
-      if (response.data.data.role === "ADMIN") {
+      if (response.data.data.user.role === "ADMIN") {
+        console.log("Role:", response.data.data.user.role);
+        console.log("Navigating to: /admin/dashboard");
         navigate("/admin/dashboard");
       } else {
         setError("Access denied. Admin privileges required.");
         dispatch(signinFailure("Insufficient privileges"));
       }
     } catch (error) {
-        console.log(error)
+      console.log(error);
       dispatch(signinFailure(error.response?.data?.message));
       if (error.response) {
         setError(
@@ -75,16 +77,11 @@ const SuperAdminLogin = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-teal-50 to-teal-100 p-4">
       <div className="w-full max-w-md">
-        
         <Card className="border-none shadow-2xl backdrop-blur-sm bg-white/90">
           <CardHeader className="space-y-1 flex justify-center">
             <div className="flex justify-center">
-          <img
-          src={logo}
-          alt="Logo"
-          className="h-16 w-48 object-contain"
-        />
-        </div>
+              <img src={logo} alt="Logo" className="h-16 w-48 object-contain" />
+            </div>
             <CardTitle className="text-2xl font-bold text-center text-black">
               Super Admin Portal
             </CardTitle>

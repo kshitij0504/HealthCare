@@ -28,6 +28,7 @@ const decrypt = (text) => {
 // Get user profile
 router.get('/profile/:userId',  async (req, res) => {
     const { userId } = req.params
+    console.log(userId)
     try {
         const user = await prisma.user.findUnique({
             where: {

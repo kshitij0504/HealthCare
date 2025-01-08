@@ -5,17 +5,17 @@ import { useNavigate } from "react-router-dom";
 const AdminRoute = ({ children }) => {
   const navigate = useNavigate();
   const { currentUser } = useSelector((state) => state.user || {});
-
+  console.log(currentUser.data.user.role)
   useEffect(() => {
     if (
-      !currentUser?.data?.role ||
-      currentUser?.data?.role !== "ADMIN"
+      !currentUser.data.user.role ||
+      currentUser.data.user.role !== "ADMIN"
     ) {
       navigate("/");
     }
   }, [currentUser, navigate]);
 
-  return currentUser?.data?.role === "ADMIN" ? children : null;
+  return currentUser.data.user.role === "ADMIN" ? children : null;
 };
 
 export default AdminRoute;

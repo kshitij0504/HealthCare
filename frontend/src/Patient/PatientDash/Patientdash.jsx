@@ -37,6 +37,7 @@ import Sidebar from "../PatientSidebar";
 
 const PatientDashboard = () => {
   const { currentUser } = useSelector((state) => state.user || {});
+  console.log(currentUser)
   const [user, setUser] = useState(null);
   const [healthData, setHealthData] = useState(null);
   const [appointments, setAppointments] = useState([]);
@@ -54,15 +55,16 @@ const PatientDashboard = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      console.log(currentUser.data.user.id)
       try {
         const [userResponse, healthResponse, appointmentsResponse] =
           await Promise.all([
-            fetch(`${import.meta.env.VITE_BACKEND_URL}/temp/profile/${currentUser.data.id}`),
+            fetch(`${import.meta.env.VITE_BACKEND_URL}/temp/profile/${currentUser.data.user.id}`),
             fetch(
-              `${import.meta.env.VITE_BACKEND_URL}/temp/health-data/${currentUser.data.id}`
+              `${import.meta.env.VITE_BACKEND_URL}/temp/health-data/${currentUser.data.user.id}`
             ),
             fetch(
-              `${import.meta.env.VITE_BACKEND_URL}/temp/appointments/${currentUser.data.id}`
+              `${import.meta.env.VITE_BACKEND_URL}/temp/appointments/${currentUser.data.user.id}`
             ),
           ]);
 

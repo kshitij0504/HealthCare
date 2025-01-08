@@ -77,7 +77,7 @@ const AppointmentsList = () => {
     try {
       setIsLoading(true);
       const response = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL}/user/appointment/${currentUser.data.id}`,
+        `${import.meta.env.VITE_BACKEND_URL}/user/appointment/${currentUser.data.user.id}`,
         {
           headers: { "Content-Type": "application/json" },
           withCredentials: true,

@@ -257,8 +257,7 @@ const SignIn = () => {
           withCredentials: true,
         }
       );
-
-      // The backend should set an HTTP-only cookie for the session
+      console.log(response.data)
       dispatch(signinSuccess({ user: response.data }));
       navigate('/patientdash');
     } catch (error) {
