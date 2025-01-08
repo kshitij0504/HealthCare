@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useNavigate } from 'react-router-dom';
 import logo from "../../assets/CureNest_logo.svg"
+
 const LoginPage = () => {
   const [userType, setUserType] = useState('org');
   const [formData, setFormData] = useState({ id: '', password: '', accessId: '' });

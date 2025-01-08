@@ -135,7 +135,7 @@ const AppointmentScheduler = ({ onClose, onAppointmentBooked }) => {
       setBookingStatus("Please fill in all fields");
       return;
     }
-
+    console.log(currentUser.data)
     try {
       const { data } = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/user/book-appointment`,
@@ -146,7 +146,7 @@ const AppointmentScheduler = ({ onClose, onAppointmentBooked }) => {
           endTime: selectedSlot.endTime,
           patientName,
           patientEmail,
-          userId: currentUser.data.id,
+          userId: currentUser.data.user.id,
           specialty: selectedSpecialty
         }
       );
