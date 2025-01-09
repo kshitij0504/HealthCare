@@ -22,7 +22,7 @@ router.get('/organizations', async (req, res) => {
   }
 });
 
-// Get doctors by organization ID
+
 router.get('/doctors/:organizationId', async (req, res) => {
   const { organizationId } = req.params;
 
@@ -48,11 +48,10 @@ router.get('/organizations-by-specialty/:selectedSpecialty', async (req, res) =>
   const { selectedSpecialty } = req.params;
 
   try {
-    // Fetch organizations with the specified specialty
     const organizations = await prisma.organization.findMany({
       where: {
         specialities: {
-          has: selectedSpecialty, // Matches arrays containing the specialty
+          has: selectedSpecialty,
         },
       },
       select: {
