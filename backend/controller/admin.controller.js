@@ -86,7 +86,7 @@ const getAllHealthCareOrganizations = async (req, res) => {
         },
         appointments: {
           select: {
-            userId: true, // Include user IDs to calculate unique patients
+            userId: true, 
           },
         },
       },
