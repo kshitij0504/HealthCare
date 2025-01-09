@@ -49,7 +49,6 @@ CureNest is a comprehensive healthcare management system designed to streamline 
 - Mapbox API for location services
 - Firebase Authentication API
 - Custom REST APIs for healthcare data management
-- WebSocket for real-time updates
 
 ## 🚀 Getting Started
 
@@ -76,7 +75,7 @@ npm install
 ```bash
 # Backend .env
 PORT=5000
-MONGODB_URI=your_mongodb_uri
+DATABASE_URL=your_database_uri
 JWT_SECRET=your_jwt_secret
 MAPBOX_API_KEY=your_mapbox_api_key
 FIREBASE_CONFIG=your_firebase_config
@@ -94,7 +93,7 @@ npm run dev
 
 # Start frontend
 cd frontend
-npm start
+npm run dev
 ```
 
 ## 🔒 Security Features
@@ -113,7 +112,7 @@ npm start
 
 ## 📞 Support
 
-For support, please email support@curenest.com or join our Slack channel.
+For support, please email support@curenest.com 
 
 ---
 
