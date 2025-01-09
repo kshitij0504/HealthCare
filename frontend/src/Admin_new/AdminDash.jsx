@@ -220,7 +220,7 @@ const AdminDashboard_New = () => {
   const dashboardananalytics = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:5000/admin/analytics/dashboard",
+        `${import.meta.env.VITE_BACKEND_URL}/admin/analytics/dashboard`,
         {
           withCredentials: true,
         }
@@ -253,7 +253,7 @@ const AdminDashboard_New = () => {
       console.log("Sending organization data:", orgData);
 
       const response = await axios.post(
-        "http://localhost:5000/admin/add",
+        `${import.meta.env.VITE_BACKEND_URL}/admin/add`,
         orgData,
         {
           withCredentials: true,
@@ -297,7 +297,7 @@ const AdminDashboard_New = () => {
   const handleDeleteOrg = async (id) => {
     if (window.confirm("Are you sure you want to delete this organization?")) {
       try {
-        await axios.delete(`http://localhost:5000/admin/organizations/${id}`);
+        await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/admin/organizations/${id}`);
         setOrganizations(organizations.filter((org) => org.id !== id));
       } catch (error) {
         console.error("Error deleting organization:", error);
