@@ -58,7 +58,9 @@ const healthOrgSignin = async (req, res) => {
           email: healthOrg.email,
           contact: healthOrg.contact,
           address: healthOrg.address,
-          doctors: healthOrg.doctors
+          doctors: healthOrg.doctors,
+          specialities: healthOrg.specialities,
+          services: healthOrg.services
         },
         token
       }
